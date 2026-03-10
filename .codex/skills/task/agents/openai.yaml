@@ -1,0 +1,7 @@
+interface:
+  display_name: "Task"
+  short_description: "Plan and execute repository tasks by size"
+  default_prompt: "Use $task to inspect this work, size it, and drive the matching workflow."
+
+policy:
+  allow_implicit_invocation: true

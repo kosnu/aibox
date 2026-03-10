@@ -1,0 +1,7 @@
+interface:
+  display_name: "Create Draft PR"
+  short_description: "Create a draft pull request"
+  default_prompt: "Use $create-draft-pr to create a draft PR that summarizes all commits on the branch."
+
+policy:
+  allow_implicit_invocation: true

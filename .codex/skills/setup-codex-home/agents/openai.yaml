@@ -1,0 +1,7 @@
+interface:
+  display_name: ".codex Setup"
+  short_description: "Link repository .codex entries into ~/.codex"
+  default_prompt: "Use $setup-codex-home to link this repository's .codex entries into ~/.codex with backups for conflicting files."
+
+policy:
+  allow_implicit_invocation: true

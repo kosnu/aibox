@@ -1,0 +1,21 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+model = "gpt-5.4"
+[projects."/Users/kosnu/dev/github.com/kosnu/aibox"]
+trust_level = "trusted"
+
+[projects."/Users/kosnu/dev/github.com/kosnu/savings"]
+trust_level = "trusted"
+
+[notice.model_migrations]
+"gpt-5.3-codex" = "gpt-5.4"
+
+[mcp_servers.openaideveloperdocs]
+enabled = true
+url = "https://developers.openai.com/mcp"
+
+notify = ["bash", ".codex/hooks/stop-notify.sh"]
+
+[tui]
+notifications = ["agent-turn-complete", "approval-requested"]
+notification_method = "auto"

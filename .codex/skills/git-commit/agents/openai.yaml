@@ -1,0 +1,7 @@
+interface:
+  display_name: "Commit Changes"
+  short_description: "Stage and commit in-scope changes"
+  default_prompt: "Use $git-commit to stage and commit the current task changes with a Japanese commit message."
+
+policy:
+  allow_implicit_invocation: true

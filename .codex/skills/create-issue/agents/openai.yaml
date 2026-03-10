@@ -1,0 +1,7 @@
+interface:
+  display_name: "Create Issue"
+  short_description: "Create GitHub issue with templates"
+  default_prompt: "Use $create-issue to create a GitHub issue from template and link project when needed."
+
+policy:
+  allow_implicit_invocation: true

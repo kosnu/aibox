@@ -1,0 +1,7 @@
+interface:
+  display_name: "Create Branch"
+  short_description: "Create issue-based feature branches"
+  default_prompt: "Use $git-branch to create an issue branch from a GitHub issue number."
+
+policy:
+  allow_implicit_invocation: true
