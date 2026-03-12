@@ -29,6 +29,8 @@ argument-hint: "[issue description]"
   - Keep all section headings from the template.
   - Do not leave blank placeholders.
 - Without template, create a clear title/body from `$ARGUMENTS`.
+- Before running `gh issue create`, show the user the exact draft title and body that will be used.
+- Ask for explicit approval to create the issue after showing the draft.
 - Run `gh issue create --title "..." --body "..." [--project "Project Name"]`.
 - Show the created issue URL.
 
@@ -39,6 +41,8 @@ Suggest `/git-branch {issue-number}` after issue creation.
 ## Rules
 
 - Always confirm guessed template with user before use.
+- Always show the final draft issue title/body before creation.
+- Never create the issue until the user approves the presented draft.
 - If only one project exists, auto-selection is allowed.
 - Never include template frontmatter in issue body.
 - Use non-interactive `gh issue create` with explicit `--title` and `--body`.
