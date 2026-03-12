@@ -1,6 +1,7 @@
 #:schema https://developers.openai.com/codex/config-schema.json
 
 model = "gpt-5.4"
+personality = "pragmatic"
 [projects."/Users/kosnu/dev/github.com/kosnu/aibox"]
 trust_level = "trusted"
 
@@ -11,11 +12,14 @@ trust_level = "trusted"
 "gpt-5.3-codex" = "gpt-5.4"
 
 [mcp_servers.openaideveloperdocs]
-enabled = true
 url = "https://developers.openai.com/mcp"
 
-notify = ["bash", ".codex/hooks/stop-notify.sh"]
+[mcp_servers.supabase]
+url = "https://mcp.supabase.com/mcp?project_ref=flpswdqbgrwnkjtokzfr"
 
 [tui]
 notifications = ["agent-turn-complete", "approval-requested"]
 notification_method = "auto"
+
+[features]
+rmcp_client = true
