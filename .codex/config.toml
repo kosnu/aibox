@@ -2,6 +2,8 @@
 
 model = "gpt-5.4"
 personality = "pragmatic"
+sandbox_mode = "workspace-write"
+model_reasoning_effort = "medium"
 [projects."/Users/kosnu/dev/github.com/kosnu/aibox"]
 trust_level = "trusted"
 
@@ -23,3 +25,6 @@ notification_method = "auto"
 
 [features]
 rmcp_client = true
+
+[sandbox_workspace_write]
+network_access = false
