@@ -32,6 +32,7 @@ Types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`
 
 - Do not include unrelated changes.
 - Treat commit-time verification as a fresh gate: only checks that you yourself ran successfully just before the commit count as verified.
+- When running `git commit`, pass the subject/body/trailer with separate `-m` flags instead of embedding literal `\n` in one shell string.
 
 ## Next Action
 

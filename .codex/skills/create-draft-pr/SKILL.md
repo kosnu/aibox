@@ -15,6 +15,9 @@ argument-hint: "[issue-number]"
 2. Run `git status` to check uncommitted or out-of-scope changes
 3. If PR template exists (for example `.github/PULL_REQUEST_TEMPLATE.md`), read and use it for PR body. Otherwise write clear body:
    - Keep the body concise
+   - Keep only the minimum headings needed for reviewers
+   - Prefer 2-3 short sections at most
+   - Summarize each section in 1-3 short bullet points or 1 short paragraph
    - Link related issue if available
    - Describe changes from actual diff
    - Check only verified items
@@ -31,7 +34,7 @@ argument-hint: "[issue-number]"
 
 - Default to Draft. Mark Ready for Review only on explicit request.
 - Always push head branch before `gh pr create`.
-- Keep all template headings if a template is used.
+- Do not keep template headings that add no review value.
 - No empty fields or placeholder text.
 - Prefer short PR titles and bodies. Avoid repetitive explanation.
 - In the final user-facing report, keep it brief and do not enumerate file names unless the user asks.
