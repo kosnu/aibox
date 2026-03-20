@@ -36,4 +36,4 @@ Types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`
 
 ## Next Action
 
-Suggest `/create-draft-pr` after commit if appropriate.
+Suggest `$create-draft-pr` after commit if appropriate.

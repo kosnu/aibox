@@ -39,7 +39,7 @@ argument-hint: "[issue description]"
 
 ## Next Action
 
-Suggest `/git-branch {issue-number}` after issue creation.
+Suggest `$git-branch {issue-number}` after issue creation.
 
 ## Rules
 

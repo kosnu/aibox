@@ -1,6 +1,6 @@
 ---
 name: task
-description: Unified task workflow for Codex. Auto-detects size (Small/Medium/Large) and follows the matching implementation flow. Use when the user says "/task" or asks to handle a task end-to-end.
+description: Unified task workflow for Codex. Auto-detects size (Small/Medium/Large) and follows the matching implementation flow. Use when the user says "$task" or asks to handle a task end-to-end.
 argument-hint: "[issue-number or task description]"
 ---
 

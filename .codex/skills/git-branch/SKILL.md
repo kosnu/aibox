@@ -30,7 +30,7 @@ argument-hint: "[issue-number|branch-topic]"
 
 ## Next Action
 
-Suggest `/task $ARGUMENTS` after branch creation when the branch is tied to a task or issue.
+Suggest `$task $ARGUMENTS` after branch creation when the branch is tied to a task or issue.
 
 ## Rules
 
