@@ -2,7 +2,7 @@
 
 model = "gpt-5.4"
 personality = "pragmatic"
-sandbox_mode = "workspace-write"
+sandbox_mode = "danger-full-access"
 model_reasoning_effort = "medium"
 [projects."/Users/kosnu/dev/github.com/kosnu/aibox"]
 trust_level = "trusted"
@@ -18,6 +18,9 @@ url = "https://developers.openai.com/mcp"
 
 [mcp_servers.supabase]
 url = "https://mcp.supabase.com/mcp?project_ref=flpswdqbgrwnkjtokzfr"
+
+[mcp_servers.zod]
+url = "https://mcp.inkeep.com/zod/mcp"
 
 [tui]
 notifications = ["agent-turn-complete", "approval-requested"]
