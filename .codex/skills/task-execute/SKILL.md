@@ -10,9 +10,21 @@ argument-hint: "[approved plan or task description with explicit approval]"
 
 Implement an already approved plan, keep the changed behavior synchronized across its representations, review the diff in parallel with subagents, and finish with verification.
 
+Treat execution as execution, not planning. Once an approved plan exists, do not drift back into planning mode during this skill.
+
 ## Entry Gate
 
 Do not start implementation unless an approved plan already exists in the conversation or the user explicitly provides one.
+
+If an approved plan exists, `task-execute` must not create a new plan.
+
+At this stage, the only allowed pre-implementation work is:
+
+- briefly restating the approved content
+- organizing the immediate blockers versus the parts that can run in parallel
+- doing the minimum code confirmation needed to start the next edit safely
+
+Do not re-present an approval-ready plan during execution.
 
 Before editing:
 
@@ -36,6 +48,21 @@ Turn the approved plan into an execution checklist:
 - integration points that must remain stable
 - reviewer-assigned concerns carried over from planning
 
+Limit pre-implementation investigation to the minimum confirmation needed for the next code change.
+
+Allowed examples:
+
+- confirming the exact file or function name to edit
+- checking the current call path before patching
+- opening the nearby test or story that already belongs to the approved scope
+
+Not allowed here:
+
+- re-discovering representation categories
+- redefining the scope
+- reconstructing the plan from review perspectives
+- broad exploratory research that belongs in `task-plan`
+
 Use `update_plan` when the work is Medium or Large.
 
 ## Step 2: Decide Parallelization
@@ -53,6 +80,15 @@ Use subagents whenever there are independent tasks with disjoint or minimally co
 - Tell workers they are not alone in the codebase and must not revert others' changes
 - Keep the main agent focused on integration, critical-path edits, and final verification
 
+Any read-only check done here must stay narrowly scoped to immediate implementation needs.
+
+Do not use subagents here to:
+
+- rebuild an approval-ready plan
+- perform `task-plan`-style reviewer validation before implementation starts
+- expand the task into newly discovered representation categories unless re-approval is triggered
+- generate a fresh approval gate such as "if this plan looks good, I will implement it"
+
 For Medium and Large work, subagent use is the default when there is any safe parallel split.
 
 For Small work, subagent use is optional during implementation but mandatory during review.
@@ -68,9 +104,13 @@ Execute the approved plan while keeping representations synchronized.
 - if scope changes materially, say so and reframe the size classification
 - if the approved plan proves incomplete, pause and resolve the gap before continuing risky edits
 
+If additional investigation reveals that the approved plan is missing something material, stop instead of silently re-planning inside execution.
+
 ## Step 3.5: Re-approval Gate
 
 Do not continue on an implicitly rewritten plan.
+
+If re-planning becomes necessary during implementation, stop at that point and ask for re-approval instead of rebuilding the plan inside `task-execute`.
 
 Return for re-approval before continuing if any of the following happen:
 
@@ -82,6 +122,19 @@ Return for re-approval before continuing if any of the following happen:
 - the integration sequence changes enough to affect rollout or verification strategy
 
 For minor clarifications that do not change approved scope or behavior, proceed and note the clarification in the final summary.
+
+Examples of minor clarifications that do not require re-approval:
+
+- choosing between two already-in-scope helper functions
+- confirming the exact existing test file to extend
+- adjusting local implementation order without changing behavior, scope, or verification strategy
+
+Examples that do require re-approval:
+
+- discovering another module must be changed outside the approved write scope
+- realizing the accepted UX behavior needs a different user-visible flow
+- learning that the approved acceptance criteria are insufficient or wrong
+- introducing a new performance tradeoff, rollout step, or migration concern not covered by the approved plan
 
 ## Step 4: Review In Parallel
 
@@ -131,6 +184,10 @@ Summarize:
 ## Rules
 
 - Never implement without an approved plan
+- Never create a new approval-ready plan inside `task-execute`
+- Never turn pre-implementation confirmation into re-planning
+- Never run `task-plan`-style subagent review before implementation starts
+- Never regenerate an approval gate such as "if this plan is okay, I will implement it"
 - Never skip subagent-based parallel review
 - Never satisfy the parallel review requirement with only one reviewer
 - Never continue after a material plan change without re-approval
@@ -141,3 +198,17 @@ Summarize:
 - Assume there may be undiscovered representations until contradiction search is complete
 - Prefer searching for leftover evidence of the old behavior over searching only for support of the new behavior
 - Scale the workflow up or down if the scope changes; tell the user when you do
+
+## Examples
+
+Good:
+
+- restate the approved plan in 2-3 sentences
+- confirm the minimum necessary code location or existing test to edit
+- start implementation immediately
+
+Bad:
+
+- use subagents to re-investigate the task even though an approved plan already exists
+- rebuild and re-present an approval-ready plan
+- hold implementation until a new approval gate is satisfied
