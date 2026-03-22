@@ -18,7 +18,9 @@ argument-hint: "[issue-number]"
    - Keep only the minimum headings needed for reviewers
    - Prefer 2-3 short sections at most
    - Summarize each section in 1-3 short bullet points or 1 short paragraph
-   - Link related issue if available
+   - Link the related issue explicitly when available
+   - If the branch fully satisfies the issue's completion conditions, use `- closes #{issue-number}`
+   - If the branch is still related to the issue but does not fully satisfy its completion conditions, use `- #{issue-number}`
    - Describe changes from actual diff
    - Check only verified items
    - Add notes only when they are necessary for review
@@ -34,6 +36,7 @@ argument-hint: "[issue-number]"
 
 - Default to Draft. Mark Ready for Review only on explicit request.
 - Always push head branch before `gh pr create`.
+- Decide whether to use `closes` by checking the actual issue completion conditions against the current branch diff, not just by matching branch name or intent.
 - Do not keep template headings that add no review value.
 - No empty fields or placeholder text.
 - Prefer short PR titles and bodies. Avoid repetitive explanation.
