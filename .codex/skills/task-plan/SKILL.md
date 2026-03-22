@@ -1,6 +1,6 @@
 ---
 name: task-plan
-description: Investigate a repository task, model the changed behavior, parallelize research/design with subagents, and produce an approval-ready implementation plan. Use when the user says "$task-plan" or asks to plan work before editing.
+description: Investigate a repository task, model the changed behavior, parallelize research/design with subagents, review the plan with senior-role subagents, and produce an approval-ready implementation plan. Use when the user says "$task-plan" or asks to plan work before editing.
 argument-hint: "[issue-number or task description]"
 ---
 
@@ -88,8 +88,11 @@ Produce a concrete implementation plan that includes:
 - the representations being synchronized
 - entry-point files and other expected files to touch
 - files or representations checked and intentionally left unchanged
+- acceptance criteria
 - verification strategy
+- rollback or guardrail notes when the change is risky
 - explicit uncertainties and contradiction-search targets
+- reviewer-assigned concerns for execution, if already known
 
 For Medium and Large work, also include:
 
@@ -97,7 +100,61 @@ For Medium and Large work, also include:
 - which parts are likely candidates for subagent execution later
 - the ownership boundaries or write scopes that would let workers operate safely in parallel
 
-## Step 5: Approval Gate
+## Step 5: Review The Plan
+
+Before presenting the plan for approval, review the plan with subagents.
+
+This review is mandatory regardless of task size.
+
+Use subagents that emulate senior perspectives appropriate to the task, such as:
+
+- senior engineer
+- senior designer
+- senior product manager
+
+Use at least two reviewer subagents whenever multiple perspectives are relevant.
+
+Senior engineer review is mandatory for every task so maintainability, testability, and ease of future changes always have an explicit owner.
+
+Pick the reviewer mix based on the task shape. For example:
+
+- backend-heavy work: senior engineer is mandatory
+- UX-heavy work: senior designer is mandatory
+- scope, sequencing, rollout, or prioritization tradeoffs: senior product manager is mandatory
+- performance-sensitive work: assign a reviewer who explicitly owns performance concerns, usually the senior engineer unless another reviewer is better suited
+
+Run these reviews in parallel when there are multiple relevant perspectives.
+
+The plan review must explicitly evaluate:
+
+- maintainability
+- testability
+- ease of future changes
+- UX
+- performance
+
+Before starting review, assign the required evaluation areas to specific reviewers and make sure every area has a named owner.
+
+Ask reviewers to look for:
+
+- over-complicated sequencing or architecture
+- weak module boundaries or unclear ownership
+- plans that are hard to test or verify safely
+- user flows or UX tradeoffs that the implementation plan ignores
+- performance regressions or scale risks hidden by the proposed approach
+- missing representations, stale assumptions, or contradiction-search gaps
+
+After the review:
+
+- summarize the key findings from each reviewer perspective
+- revise the plan before presenting it if the findings expose a meaningful weakness
+- if you decide not to adopt a reviewer suggestion, explain why
+- present the revised plan, not the pre-review draft
+- if meaningful reviewer concerns remain unresolved, list them explicitly as approval risks
+
+Do not present the plan as approval-ready until this review pass is complete.
+
+## Step 6: Approval Gate
 
 Stop after presenting the plan and get user approval before editing any files.
 
@@ -106,6 +163,7 @@ Do not implement, patch files, or run write operations during this skill.
 ## Rules
 
 - Never skip user approval before implementation
+- Never skip subagent-based plan review before requesting approval
 - No unrelated refactors or cleanup
 - Keep tool usage specific and efficient
 - Prefer behavior-level reasoning over file-level reasoning when the same rule may be represented in multiple places

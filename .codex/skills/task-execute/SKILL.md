@@ -29,9 +29,12 @@ Turn the approved plan into an execution checklist:
 
 - files or modules to edit
 - representations to update
+- acceptance criteria
 - verification steps
+- rollback or guardrail notes
 - contradiction-search targets
 - integration points that must remain stable
+- reviewer-assigned concerns carried over from planning
 
 Use `update_plan` when the work is Medium or Large.
 
@@ -65,6 +68,21 @@ Execute the approved plan while keeping representations synchronized.
 - if scope changes materially, say so and reframe the size classification
 - if the approved plan proves incomplete, pause and resolve the gap before continuing risky edits
 
+## Step 3.5: Re-approval Gate
+
+Do not continue on an implicitly rewritten plan.
+
+Return for re-approval before continuing if any of the following happen:
+
+- the size classification changes
+- the write scope expands materially beyond the approved plan
+- the changed behavior or acceptance criteria change
+- the UX direction changes in a user-visible way
+- the performance characteristics or risk profile change materially
+- the integration sequence changes enough to affect rollout or verification strategy
+
+For minor clarifications that do not change approved scope or behavior, proceed and note the clarification in the final summary.
+
 ## Step 4: Review In Parallel
 
 Before final verification, always run review with subagents in parallel regardless of size.
@@ -77,7 +95,14 @@ The review must cover:
 - evidence that the old behavior still exists elsewhere
 - contradictions to the current understanding of the changed behavior
 
-Use at least one subagent reviewer. Prefer multiple reviewers when the diff spans multiple concerns.
+Use at least two subagent reviewers so the review is actually parallel.
+
+Assign distinct review ownership. At minimum:
+
+- one reviewer owns behavior, regressions, and contradiction search
+- one reviewer owns tests, stale assumptions, and verification gaps
+
+When the work spans multiple subsystems or includes meaningful UX or performance impact, add reviewers or redistribute ownership so those concerns have explicit coverage.
 
 Examples of good review splits:
 
@@ -107,6 +132,8 @@ Summarize:
 
 - Never implement without an approved plan
 - Never skip subagent-based parallel review
+- Never satisfy the parallel review requirement with only one reviewer
+- Never continue after a material plan change without re-approval
 - No unrelated refactors or cleanup
 - Keep tool usage specific and efficient
 - Prefer behavior-level reasoning over file-level reasoning when the same rule may be represented in multiple places
