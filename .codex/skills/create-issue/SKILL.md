@@ -26,9 +26,12 @@ argument-hint: "[issue description]"
 
 - Fill title/body from selected template and `$ARGUMENTS`.
   - Exclude YAML frontmatter (`--- ... ---`) from the body.
-  - Keep all section headings from the template.
+  - Keep only the headings needed to make the issue understandable.
+  - Prefer 2-3 short sections at most.
+  - Summarize each section in 1-3 short bullet points or 1 short paragraph.
   - Do not leave blank placeholders.
 - Without template, create a clear title/body from `$ARGUMENTS`.
+  - Prefer a short title and a brief body with only the essential context, goal, and acceptance point.
 - Before running `gh issue create`, show the user the exact draft title and body that will be used.
 - Ask for explicit approval to create the issue after showing the draft.
 - Run `gh issue create --title "..." --body "..." [--project "Project Name"]`.
@@ -36,7 +39,7 @@ argument-hint: "[issue description]"
 
 ## Next Action
 
-Suggest `/git-branch {issue-number}` after issue creation.
+Suggest `$git-branch {issue-number}` after issue creation.
 
 ## Rules
 
@@ -45,4 +48,6 @@ Suggest `/git-branch {issue-number}` after issue creation.
 - Never create the issue until the user approves the presented draft.
 - If only one project exists, auto-selection is allowed.
 - Never include template frontmatter in issue body.
+- Prefer concise issue titles and bodies over template completeness.
+- Omit template sections that do not add concrete information.
 - Use non-interactive `gh issue create` with explicit `--title` and `--body`.

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Task Execute"
+  short_description: "Implement an approved plan with parallel review"
+  default_prompt: "Use $task-execute to implement an approved plan, delegate safe parallel work with subagents, and always run parallel review with subagents before verification."
+
+policy:
+  allow_implicit_invocation: true
