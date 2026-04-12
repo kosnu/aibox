@@ -1,0 +1,7 @@
+interface:
+  display_name: "Reply Review Comments"
+  short_description: "Reply to handled review comments"
+  default_prompt: "Use $reply-review-comments to reply to the recently addressed PR review comments, explain what changed, include any relevant commit IDs, and resolve only the threads that are fully complete."
+
+policy:
+  allow_implicit_invocation: true
