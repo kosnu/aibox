@@ -1,6 +1,6 @@
 ---
 name: task-plan
-description: Investigate a repository task, model the changed behavior, parallelize research/design with subagents, review the plan with senior-role subagents, and produce an approval-ready implementation plan. Use when the user says "$task-plan" or asks to plan work before editing.
+description: Investigate a repository task, model the changed behavior, apply size/risk-based subagent budgets for investigation and review, and produce an approval-ready implementation plan. Use when the user says "$task-plan" or asks to plan work before editing.
 argument-hint: "[issue-number or task description]"
 ---
 
@@ -11,6 +11,8 @@ argument-hint: "[issue-number or task description]"
 Produce an approval-ready plan before any edits.
 
 State the changed behavior or product rule in one sentence, identify the representations that must stay in sync, and stop after the user approves the plan.
+
+Repository rules, local patterns, and unstated conventions must still be investigated. Do not save rate limit by skipping grounding or review. Save rate limit by limiting subagent count according to the size/risk budget below while the main agent owns critical-path investigation and final judgment.
 
 ## Step 1: Understand the Task
 
@@ -56,28 +58,54 @@ Treat planning as complete only when no convincing contradiction remains undisco
 
 ## Step 2: Size Detection
 
-Detect size and state the reasoning to the user:
+Detect size by the number and risk of behavioral representation concerns that must stay synchronized, not by the raw number of files changed.
 
-1. Changes span multiple distinct systems (for example FE + BE) -> **Large**
-2. 4+ files or a complex feature in one system -> **Medium**
-3. Otherwise -> **Small**
+A representation concern is a behavioral surface or rule that can drift from the others if it is not updated with the same change. Common concerns include:
+
+- UI or UX behavior
+- state management
+- validation
+- API request/response mapping
+- schema, migration, or database constraint
+- domain types
+- auth, permissions, payments, or other high-risk rules
+- error handling
+- routing
+- tests, stories, fixtures, or mocks
+- performance, accessibility, rollout, or backward compatibility
+
+Classify the work and state the reasoning to the user:
+
+1. 4 or more distinct concerns, cross-system contract changes, or high-risk domains such as auth, permissions, payments, database migrations, or irreversible data changes -> **Large**
+2. 2-3 distinct concerns, or a moderately complex behavior change within one system where synchronization can drift -> **Medium**
+3. 1 primary concern, even when reflected mechanically across multiple files using an established pattern -> **Small**
+
+The raw number of files is only a warning signal. Many files can still be Small when they repeat one established change pattern. Few files can still be Medium or Large when they combine multiple concerns or high-risk behavior.
 
 **Branch check:** If currently on `main` or `master`, recommend creating a work branch before implementation.
 
-## Step 3: Parallel Investigation And Design
+## Step 3: Budgeted Investigation And Design
 
-Use subagents to accelerate research and design.
+Use the smallest investigation budget that still protects repository rules, local patterns, and unstated conventions.
 
-- Start with the main agent doing the immediate blocking read needed to frame the task
-- Then identify independent investigation or design questions that can run in parallel
-- Spawn subagents for those sidecar questions instead of doing all exploration sequentially
-- Prefer `explorer` subagents for codebase investigation and design validation
-- Reuse existing subagents for related follow-up questions when practical
-- While subagents run, continue non-overlapping local investigation instead of waiting idly
+The main agent must start by checking the immediate blocking context:
 
-For Medium and Large work, parallel subagent-based investigation is the default. For Small work, still use subagents when there are at least two independent questions or representations to inspect.
+- repository instructions such as `AGENTS.md` or `CLAUDE.md`
+- named files, issue references, or explicit entry points
+- nearby imports, sibling implementations, and established local patterns
+- relevant tests, stories, fixtures, mocks, or verification commands
+- contradiction-search targets from Step 1.6
 
-If subagents are not used, explicitly state why the work was too small or too coupled to parallelize safely.
+After the main-agent grounding pass, identify whether there is a concrete independent sidecar question. Use subagents only when the question is independent enough to answer without blocking the main agent and the size/risk budget allows it.
+
+Subagent investigation budget:
+
+- **Small / Low risk:** main-agent investigation only by default. Use at most 1 `explorer` only if a concrete independent risk or question is named.
+- **Small / Normal risk:** main-agent investigation remains primary. Use at most 1 `explorer` for a clearly independent uncertainty.
+- **Medium:** main agent plus, when useful, 1 `explorer`. Add more only when concerns are independent and the extra agent has a distinct ownership area.
+- **Large / High risk:** multiple subagents are allowed when each has an explicit role, ownership boundary, and question to answer.
+
+If no subagent is used, do not merely say the work was small or coupled. Briefly record the main-agent checks that covered repository rules, local patterns, relevant tests, and contradiction targets.
 
 ## Step 4: Build The Plan
 
@@ -93,6 +121,7 @@ Produce a concrete implementation plan that includes:
 - rollback or guardrail notes when the change is risky
 - explicit uncertainties and contradiction-search targets
 - reviewer-assigned concerns for execution, if already known
+- the subagent budget expected during execution and review
 
 For Medium and Large work, also include:
 
@@ -100,40 +129,37 @@ For Medium and Large work, also include:
 - which parts are likely candidates for subagent execution later
 - the ownership boundaries or write scopes that would let workers operate safely in parallel
 
-## Step 5: Review The Plan
+## Step 5: Review The Plan Within Budget
 
-Before presenting the plan for approval, review the plan with subagents.
-
-This review is mandatory regardless of task size.
-
-Use subagents that emulate senior perspectives appropriate to the task, such as:
-
-- senior engineer
-- senior designer
-- senior product manager
-
-Use at least two reviewer subagents whenever multiple perspectives are relevant.
-
-Senior engineer review is mandatory for every task so maintainability, testability, and ease of future changes always have an explicit owner.
-
-Pick the reviewer mix based on the task shape. For example:
-
-- backend-heavy work: senior engineer is mandatory
-- UX-heavy work: senior designer is mandatory
-- scope, sequencing, rollout, or prioritization tradeoffs: senior product manager is mandatory
-- performance-sensitive work: assign a reviewer who explicitly owns performance concerns, usually the senior engineer unless another reviewer is better suited
-
-Run these reviews in parallel when there are multiple relevant perspectives.
+Before presenting the plan for approval, review the plan. Review is mandatory; subagent-based review is budgeted.
 
 The plan review must explicitly evaluate:
 
 - maintainability
 - testability
 - ease of future changes
-- UX
-- performance
+- UX impact
+- performance impact
+- missing representations
+- stale assumptions or contradiction-search gaps
 
-Before starting review, assign the required evaluation areas to specific reviewers and make sure every area has a named owner.
+Main agent checklist review is required for every task, including Small work. The main agent must check the evaluation areas above before asking for approval.
+
+Subagent review budget:
+
+- **Small / Low risk:** main agent checklist review only. Do not call this skipped review; record it as local review.
+- **Small / Normal risk:** at most 1 reviewer subagent. Focus the reviewer on repository pattern drift, stale assumptions, or missing representations.
+- **Medium:** 2 reviewers by default. If the concerns are tightly coupled and clearly covered, 1 reviewer plus main agent checklist review is acceptable.
+- **Large / High risk:** 2 or more reviewers. Assign coverage for UX, performance, data, rollout, or other relevant risk areas.
+
+Pick the reviewer mix based on the task shape. For example:
+
+- backend-heavy work: senior engineer owns maintainability, testability, and data/API risk
+- UX-heavy work: senior designer owns user flow and interaction risk
+- scope, sequencing, rollout, or prioritization tradeoffs: senior product manager is mandatory
+- performance-sensitive work: assign a reviewer who explicitly owns performance concerns, usually the senior engineer unless another reviewer is better suited
+
+Before starting subagent review, assign the required evaluation areas to specific reviewers and make sure every area has a named owner. When the budget uses no subagent, the main agent owns all evaluation areas and must state that explicitly.
 
 Ask reviewers to look for:
 
@@ -163,9 +189,11 @@ Do not implement, patch files, or run write operations during this skill.
 ## Rules
 
 - Never skip user approval before implementation
-- Never skip subagent-based plan review before requesting approval
+- Never skip plan review before requesting approval
 - No unrelated refactors or cleanup
 - Keep tool usage specific and efficient
+- Do not classify by the raw number of files alone
+- For Small work, do not spend subagents unless a concrete independent risk or question is named
 - Prefer behavior-level reasoning over file-level reasoning when the same rule may be represented in multiple places
 - Prefer concrete file-level plans over vague summaries
 - In the plan, name the representations being synchronized and avoid calling the task ready until each one is covered or explicitly justified as unchanged

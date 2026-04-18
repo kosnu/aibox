@@ -1,6 +1,6 @@
 ---
 name: task-execute
-description: Execute an approved repository task plan, use subagents where work can be split safely, and always run parallel review with subagents before final verification. Use when the user says "$task-execute" or asks to implement an approved plan.
+description: Execute an approved repository task plan, keep changed behavior synchronized, and use size/risk-based subagent budgets for implementation and review. Use when the user says "$task-execute" or asks to implement an approved plan.
 argument-hint: "[approved plan or task description with explicit approval]"
 ---
 
@@ -8,9 +8,11 @@ argument-hint: "[approved plan or task description with explicit approval]"
 
 ## Goal
 
-Implement an already approved plan, keep the changed behavior synchronized across its representations, review the diff in parallel with subagents, and finish with verification.
+Implement an already approved plan, keep the changed behavior synchronized across its representations, review the diff within the approved size/risk budget, and finish with verification.
 
 Treat execution as execution, not planning. Once an approved plan exists, do not drift back into planning mode during this skill.
+
+Repository rules, local patterns, and unstated conventions must still be respected during execution. Do not save rate limit by skipping grounding or review. Save rate limit by limiting subagent count according to the approved size/risk budget while the main agent owns critical-path implementation, integration, and final judgment.
 
 ## Entry Gate
 
@@ -29,9 +31,10 @@ Do not re-present an approval-ready plan during execution.
 Before editing:
 
 - restate the approved changed behavior in one sentence
-- restate the size classification if known, or recompute it from the approved plan
+- restate the size/risk classification if known, or recompute it from the approved plan using representation concerns rather than the raw number of files
 - restate the representations that must stay in sync
 - identify the implementation steps that are immediate blockers versus those that can run in parallel
+- restate the subagent budget for implementation and review
 
 If there is no approved plan, stop and tell the user to run `task-plan` first or provide an approved plan directly.
 
@@ -47,6 +50,7 @@ Turn the approved plan into an execution checklist:
 - contradiction-search targets
 - integration points that must remain stable
 - reviewer-assigned concerns carried over from planning
+- the approved subagent budget for implementation and review
 
 Limit pre-implementation investigation to the minimum confirmation needed for the next code change.
 
@@ -65,14 +69,14 @@ Not allowed here:
 
 Use `update_plan` when the work is Medium or Large.
 
-## Step 2: Decide Parallelization
+## Step 2: Decide The Execution Budget
 
 At the start of execution, explicitly separate:
 
 - what the main agent should do locally right now
 - what can be delegated safely in parallel
 
-Use subagents whenever there are independent tasks with disjoint or minimally coupled ownership.
+Use subagents only when there are independent tasks with disjoint or minimally coupled ownership and the approved size/risk budget allows it.
 
 - Prefer `worker` subagents for bounded implementation tasks
 - Prefer `explorer` subagents for targeted read-only questions that unblock design or integration checks
@@ -89,11 +93,13 @@ Do not use subagents here to:
 - expand the task into newly discovered representation categories unless re-approval is triggered
 - generate a fresh approval gate such as "if this plan looks good, I will implement it"
 
-For Medium and Large work, subagent use is the default when there is any safe parallel split.
+Implementation subagent budget:
 
-For Small work, subagent use is optional during implementation but mandatory during review.
+- **Small:** the main agent implements. Do not use worker subagents.
+- **Medium:** use at most 1 worker only when ownership is clearly separated.
+- **Large:** use multiple workers only when each has disjoint ownership and integration remains controlled by the main agent.
 
-If execution is kept local, explicitly state why the work is too small, too coupled, or too blocking to split safely.
+For Medium and Large work, subagents are allowed only when there is a safe split. If execution is kept local, briefly record the main-agent checks and why delegation would not reduce risk or latency.
 
 ## Step 3: Implement
 
@@ -136,9 +142,9 @@ Examples that do require re-approval:
 - learning that the approved acceptance criteria are insufficient or wrong
 - introducing a new performance tradeoff, rollout step, or migration concern not covered by the approved plan
 
-## Step 4: Review In Parallel
+## Step 4: Review Within Budget
 
-Before final verification, always run review with subagents in parallel regardless of size.
+Before final verification, always review the implemented diff. Review is mandatory; subagent-based review is budgeted.
 
 The review must cover:
 
@@ -147,23 +153,24 @@ The review must cover:
 - unsynchronized representations
 - evidence that the old behavior still exists elsewhere
 - contradictions to the current understanding of the changed behavior
+- repository pattern drift and unstated convention violations
 
-Use at least two subagent reviewers so the review is actually parallel.
+Main agent checklist review is required for every task, including Small work. The main agent must explicitly check the review areas above before verification.
 
-Assign distinct review ownership. At minimum:
+Post-implementation review budget:
 
-- one reviewer owns behavior, regressions, and contradiction search
-- one reviewer owns tests, stale assumptions, and verification gaps
+- **Small / Low risk:** main agent checklist review only. Do not call this skipped review; record it as local review.
+- **Small / Normal risk:** at most 1 reviewer subagent. Focus the reviewer on behavior regressions, stale assumptions, missing tests, or missing representations.
+- **Medium:** 2 reviewers by default, or 1 reviewer plus main agent checklist review if concerns are tightly coupled.
+- **Large / High risk:** 2 or more reviewers. Assign distinct ownership for behavior, tests, data, UX, performance, rollout, or other relevant risks.
 
-When the work spans multiple subsystems or includes meaningful UX or performance impact, add reviewers or redistribute ownership so those concerns have explicit coverage.
-
-Examples of good review splits:
+When subagents are used, assign distinct review ownership. Examples:
 
 - one reviewer checks behavior and edge cases while another checks tests and stale assumptions
 - one reviewer checks one subsystem while another checks another subsystem
 - one reviewer focuses on contradictions and leftover old behavior while another focuses on missing verification
 
-Do not skip parallel review even for Small work.
+When no subagent is used, briefly record the main agent checklist findings so the review is visible rather than implied.
 
 ## Step 5: Verify
 
@@ -178,6 +185,7 @@ Summarize:
 - outcome and changed behavior shipped
 - verification run
 - review findings fixed or remaining risks
+- review budget used and why it fit the size/risk classification
 - final synchronization status of each representation
 - representations checked and intentionally unchanged
 
@@ -188,11 +196,12 @@ Summarize:
 - Never turn pre-implementation confirmation into re-planning
 - Never run `task-plan`-style subagent review before implementation starts
 - Never regenerate an approval gate such as "if this plan is okay, I will implement it"
-- Never skip subagent-based parallel review
-- Never satisfy the parallel review requirement with only one reviewer
+- Never skip post-implementation review
+- Respect the approved subagent budget unless size/risk materially changes
 - Never continue after a material plan change without re-approval
 - No unrelated refactors or cleanup
 - Keep tool usage specific and efficient
+- Do not classify or reclassify by the raw number of files alone
 - Prefer behavior-level reasoning over file-level reasoning when the same rule may be represented in multiple places
 - In review, treat one-sided updates as a likely bug even when tests pass
 - Assume there may be undiscovered representations until contradiction search is complete
