@@ -7,50 +7,73 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_DIR="$PROJECT_ROOT/.codex"
 TARGET_DIR="$HOME/.codex"
 
+# ソースディレクトリがなければ終了
+if [ ! -d "$SOURCE_DIR" ]; then
+  echo "[error] source directory not found: $SOURCE_DIR" >&2
+  exit 1
+fi
+
 # ターゲットディレクトリがなければ作成
 mkdir -p "$TARGET_DIR"
 
-# .codex/ 内のファイルを走査（ディレクトリは除外）
-find "$SOURCE_DIR" -maxdepth 1 -type f | while read -r src_file; do
-  filename="$(basename "$src_file")"
-  target="$TARGET_DIR/$filename"
+link_entry() {
+  local src="$1"
+  local target="$2"
 
   # 既に正しいシンボリックリンクが存在する場合はスキップ
-  if [ -L "$target" ] && [ "$(readlink "$target")" = "$src_file" ]; then
-    echo "[skip] $target -> $src_file (already linked)"
-    continue
+  if [ -L "$target" ] && [ "$(readlink "$target")" = "$src" ]; then
+    echo "[skip] $target -> $src (already linked)"
+    return
   fi
 
   # 既存ファイル（シンボリックリンク含む）がある場合はバックアップ
   if [ -e "$target" ] || [ -L "$target" ]; then
-    backup="${target}.bak"
+    local backup="${target}.bak"
     echo "[backup] $target -> $backup"
     mv "$target" "$backup"
   fi
 
   # シンボリックリンクを作成
-  ln -s "$src_file" "$target"
-  echo "[link] $target -> $src_file"
-done
+  ln -s "$src" "$target"
+  echo "[link] $target -> $src"
+}
 
-# .codex/ 内のサブディレクトリを走査してシンボリックリンクを作成
-find "$SOURCE_DIR" -maxdepth 1 -type d | while read -r src_dir; do
-  dirname="$(basename "$src_dir")"
-  # SOURCE_DIR 自体はスキップ
-  [ "$src_dir" = "$SOURCE_DIR" ] && continue
-  target="$TARGET_DIR/$dirname"
+ensure_real_dir() {
+  local dir="$1"
 
-  if [ -L "$target" ] && [ "$(readlink "$target")" = "$src_dir" ]; then
-    echo "[skip] $target -> $src_dir (already linked)"
+  if [ -L "$dir" ]; then
+    local backup="${dir}.bak"
+    echo "[backup] $dir -> $backup"
+    mv "$dir" "$backup"
+  elif [ -e "$dir" ] && [ ! -d "$dir" ]; then
+    local backup="${dir}.bak"
+    echo "[backup] $dir -> $backup"
+    mv "$dir" "$backup"
+  fi
+
+  mkdir -p "$dir"
+}
+
+# .codex/ の直下を走査
+find "$SOURCE_DIR" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' src_entry; do
+  name="$(basename "$src_entry")"
+  target_entry="$TARGET_DIR/$name"
+
+  if [ -f "$src_entry" ]; then
+    # ルート直下のファイルはそのままリンク
+    link_entry "$src_entry" "$target_entry"
     continue
   fi
 
-  if [ -e "$target" ] || [ -L "$target" ]; then
-    backup="${target}.bak"
-    echo "[backup] $target -> $backup"
-    mv "$target" "$backup"
-  fi
+  if [ -d "$src_entry" ]; then
+    # ルート直下のディレクトリ自体はリンクせず、実ディレクトリとして用意
+    ensure_real_dir "$target_entry"
 
-  ln -s "$src_dir" "$target"
-  echo "[link] $target -> $src_dir"
+    # 子要素（例: .codex/skills/hoge）をリンク
+    find "$src_entry" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' src_child; do
+      child_name="$(basename "$src_child")"
+      target_child="$target_entry/$child_name"
+      link_entry "$src_child" "$target_child"
+    done
+  fi
 done
