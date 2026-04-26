@@ -5,25 +5,38 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SETUP_SCRIPT="$PROJECT_ROOT/scripts/setup-codex.sh"
 
-tmp_home="$(mktemp -d)"
+if ! tmp_home="$(mktemp -d 2>/dev/null)"; then
+  tmp_home="$(mktemp -d -t setup-codex-test)"
+fi
 trap 'rm -rf "$tmp_home"' EXIT
 
+log_first="$(mktemp "$tmp_home/setup-codex-test-1.XXXXXX.log")"
+log_second="$(mktemp "$tmp_home/setup-codex-test-2.XXXXXX.log")"
+log_third="$(mktemp "$tmp_home/setup-codex-test-3.XXXXXX.log")"
+log_fourth="$(mktemp "$tmp_home/setup-codex-test-4.XXXXXX.log")"
+
 echo "[test] 初回実行でリンクが作成されること"
-HOME="$tmp_home" bash "$SETUP_SCRIPT" >/tmp/setup-codex-test-1.log
+HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_first"
 
 [ -d "$tmp_home/.codex/skills" ]
 [ ! -L "$tmp_home/.codex/skills" ]
 [ -L "$tmp_home/.codex/skills/setup-codex-home" ]
 
 echo "[test] 再実行で冪等（skip）になること"
-HOME="$tmp_home" bash "$SETUP_SCRIPT" >/tmp/setup-codex-test-2.log
-grep -q "^\[skip\]" /tmp/setup-codex-test-2.log
+HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_second"
+grep -q "^\[skip\]" "$log_second"
 
 echo "[test] 既存ファイルが .bak に退避されること"
 rm -f "$tmp_home/.codex/config.toml"
 echo "local" >"$tmp_home/.codex/config.toml"
-HOME="$tmp_home" bash "$SETUP_SCRIPT" >/tmp/setup-codex-test-3.log
+HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_third"
 [ -f "$tmp_home/.codex/config.toml.bak" ]
 [ -L "$tmp_home/.codex/config.toml" ]
+
+echo "[test] source から削除済みの子リンクが削除されること"
+ln -s "$PROJECT_ROOT/.codex/skills/removed-skill" "$tmp_home/.codex/skills/removed-skill"
+HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_fourth"
+[ ! -e "$tmp_home/.codex/skills/removed-skill" ]
+[ ! -L "$tmp_home/.codex/skills/removed-skill" ]
 
 echo "[ok] all checks passed"
