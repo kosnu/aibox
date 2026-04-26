@@ -10,13 +10,15 @@ description: Stages and commits changes with Japanese commit messages. Use when 
 1. Inspect unstaged changes with fixed lightweight commands:
    - Run `git status --short` to inspect changed paths
    - Run `git diff --name-status` to inspect change types
-   - Run `git diff --unified=0 --no-ext-diff` to inspect content with minimal context
+   - Run `git diff --unified=0 --no-ext-diff -- <path>` only for specific non-generated files that need content review
+   - Skip content diffs for generated files, lockfiles, or vendored files unless the user explicitly asks
 2. Run project-specific verification defined in `CLAUDE.md` or `AGENTS.md` when available. Do not commit on failure.
 3. Stage files individually (`git add -A` only when all changes are intentionally in scope)
 4. Split commits by concern (feature, bugfix, refactor)
 5. Inspect staged changes with fixed lightweight commands:
    - Run `git diff --staged --name-status` to confirm staged scope
-   - Run `git diff --staged --unified=0 --no-ext-diff` to inspect staged content with minimal context
+   - Run `git diff --staged --unified=0 --no-ext-diff -- <path>` only for specific staged non-generated files that need content review
+   - Skip staged content diffs for generated files, lockfiles, or vendored files unless the user explicitly asks
 6. Commit without asking for extra approval
 7. Show result with `git log -1 --pretty=format:"%h: %s"`
 
