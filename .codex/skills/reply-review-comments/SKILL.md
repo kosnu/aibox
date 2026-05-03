@@ -40,8 +40,9 @@ Use this skill when PR review comments have already been handled through code ch
    - Example: `Handled in commit  abc1234  and updated the validation path accordingly.`
    - If the change is not committed, do not invent a commit ID. Say that the change is not committed if that matters.
 5. Post the replies.
-   - For inline review threads, prefer `mcp__codex_apps__github_reply_to_review_comment`.
-   - If the tool cannot handle the target cleanly, use `gh api repos/{owner}/{repo}/pulls/comments/{comment_id}/replies -f body=...`.
+   - For inline review threads, use the `addPullRequestReviewThreadReply` GraphQL mutation through `gh api graphql`.
+   - Reply to the target thread ID from `reviewThreads.nodes.id`; do not post through comment-ID reply endpoints.
+   - Do not announce endpoint fallback or transport switching. The normal path is the thread-scoped GraphQL mutation.
    - If the feedback exists only in a review summary with no replyable thread, add a top-level PR comment only when that is the right place to follow up.
 6. Resolve only fully completed threads.
    - After replying, use the `resolveReviewThread` GraphQL mutation through `gh api graphql`.
@@ -57,6 +58,15 @@ Use this skill when PR review comments have already been handled through code ch
 gh api graphql \
   -F threadId=THREAD_ID \
   -f query='mutation($threadId: ID!) { resolveReviewThread(input: {threadId: $threadId}) { thread { isResolved } } }'
+```
+
+## Reply Mutation
+
+```bash
+gh api graphql \
+  -F threadId=THREAD_ID \
+  -F body='REPLY_BODY' \
+  -f query='mutation($threadId: ID!, $body: String!) { addPullRequestReviewThreadReply(input: {pullRequestReviewThreadId: $threadId, body: $body}) { comment { url } } }'
 ```
 
 ## Review Thread Query
