@@ -1,7 +1,7 @@
 interface:
   display_name: "Task Plan"
-  short_description: "Investigate, review, and design an approval-ready implementation plan"
-  default_prompt: "Use $task-plan to inspect this work, parallelize investigation with subagents, review the plan with senior-role subagents, and stop after an approval-ready plan."
+  short_description: "Plan repository work with outcome, scope, verification, and budgeted review"
+  default_prompt: "Use $task-plan to ground this task, define the outcome, scope, success criteria, verification, and budgeted review, then stop for approval before editing."
 
 policy:
   allow_implicit_invocation: true

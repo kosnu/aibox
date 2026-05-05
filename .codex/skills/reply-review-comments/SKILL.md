@@ -7,6 +7,12 @@ description: Reply to recently addressed GitHub PR review comments from the curr
 
 Use this skill when PR review comments have already been handled through code changes or explanation, and the user wants Codex to reply to those comments and resolve fully completed threads.
 
+## Success Criteria
+
+A successful run replies only to review threads whose handling is clear, uses concrete explanation, includes commit IDs only when attributable, and resolves only fully completed threads.
+
+The final report should distinguish replied threads from resolved threads and call out any skipped threads with a brief reason.
+
 ## When To Use
 
 - The user asks Codex to reply to recently handled review comments.
@@ -19,6 +25,15 @@ Use this skill when PR review comments have already been handled through code ch
 - Replies and thread resolution write to GitHub. Perform those writes only when the user's request includes replying or resolving.
 - If the target PR is not specified, prefer the PR associated with the current branch.
 - Target only review comments that were recently addressed. Do not reply to a thread when the handling is ambiguous.
+
+## Stop Rules
+
+Stop before posting replies or resolving threads when:
+
+- the target PR cannot be resolved
+- thread-level review data cannot be fetched reliably
+- the handling is ambiguous or cannot be tied to the current branch, recent commits, or implementation state
+- resolving the thread would hide unresolved follow-up work or conflicting feedback
 
 ## Workflow
 

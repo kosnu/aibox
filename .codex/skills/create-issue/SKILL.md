@@ -6,6 +6,21 @@ argument-hint: "[issue description]"
 
 # Create Issue
 
+## Success Criteria
+
+A successful run creates one GitHub issue with a concise title and body based on the selected repository template or the user's requested issue description.
+
+The final report should include the created issue URL and any selected project link outcome.
+
+## Stop Rules
+
+Stop before `gh issue create` when:
+
+- the user has not approved the exact title and body
+- the issue template choice is ambiguous and has not been confirmed
+- required issue content cannot be filled without inventing scope, acceptance criteria, or implementation details
+- project selection is required but multiple plausible projects exist and the user has not chosen one
+
 ## Step 1: Issue template detection
 
 - Run `ls .github/ISSUE_TEMPLATE/` to get templates.
@@ -46,6 +61,7 @@ Suggest `$git-branch {issue-number}` after issue creation.
 - Always confirm guessed template with user before use.
 - Always show the final draft issue title/body before creation.
 - Never create the issue until the user approves the presented draft.
+- Keep the issue focused on the requested outcome and avoid adding implementation choices the user did not approve.
 - If only one project exists, auto-selection is allowed.
 - Never include template frontmatter in issue body.
 - Prefer concise issue titles and bodies over template completeness.
