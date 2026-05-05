@@ -6,6 +6,20 @@ argument-hint: "[issue-number|branch-topic]"
 
 # Create Branch
 
+## Success Criteria
+
+A successful run creates and switches to one concise ASCII branch from the latest `main`, using an issue-derived or topic-derived slug.
+
+The final report should name the branch and mention the source base.
+
+## Stop Rules
+
+Stop before creating a branch when:
+
+- no issue number or topic was provided and the clean worktree gives no reasonable topic to infer
+- `origin/main` cannot be fetched
+- the proposed branch name already exists locally or remotely and choosing a different name would require user intent
+
 ## Steps
 
 1. Determine whether `$ARGUMENTS` is a GitHub Issue number:
@@ -38,3 +52,4 @@ Suggest `$task $ARGUMENTS` after branch creation when the branch is tied to a ta
 - Only ask the user for a branch topic when there is no Issue number and the worktree is clean, so no reasonable topic can be inferred.
 - Keep branch names ASCII-only and concise.
 - Prefer `issue-{number}/{slug}` for Issue-driven work and `codex/{slug}` for ad hoc work.
+- Do not create multiple branch candidates; choose the single best branch name from the available issue, topic, or diff evidence.

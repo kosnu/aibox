@@ -1,7 +1,7 @@
 interface:
   display_name: "Reply Review Comments"
-  short_description: "Reply to handled review comments"
-  default_prompt: "Use $reply-review-comments to reply to the recently addressed PR review comments with the thread-scoped GraphQL reply mutation, explain what changed, include any relevant commit IDs, and resolve only the threads that are fully complete."
+  short_description: "Reply to clearly handled PR review threads"
+  default_prompt: "Use $reply-review-comments to inspect PR review threads, reply only where handling is clear, include attributable commit IDs when relevant, resolve only fully complete threads, and report skipped threads."
 
 policy:
   allow_implicit_invocation: true

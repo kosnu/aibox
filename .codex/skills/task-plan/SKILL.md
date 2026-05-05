@@ -8,13 +8,48 @@ argument-hint: "[issue-number or task description]"
 
 ## Goal
 
-Produce an approval-ready plan before any edits.
+Produce an approval-ready implementation plan before any edits.
 
 State the changed behavior or product rule in one sentence, identify the representations that must stay in sync, and stop after the user approves the plan.
 
 Repository rules, local patterns, and unstated conventions must still be investigated. Do not save rate limit by skipping grounding or review. Save rate limit by limiting subagent count according to the size/risk budget below while the main agent owns critical-path investigation and final judgment.
 
-## Step 1: Understand the Task
+## Entry Gate
+
+Use this skill only when the user wants a plan before implementation, explicitly invokes `$task-plan`, or asks for planning work.
+
+If the user asks only for an explanation, investigation, feasibility assessment, comparison, or recommendation, answer that request directly and do not escalate into an approval-ready implementation plan unless they ask for one.
+
+If the request is ambiguous, first ground the task from the repository and conversation. Ask only for missing intent or tradeoff decisions that cannot be discovered from local context.
+
+## Success Criteria
+
+A successful `task-plan` response includes:
+
+- the changed behavior or product rule in one sentence
+- the representations that must stay synchronized
+- clear in-scope and out-of-scope boundaries
+- acceptance criteria for the implementation
+- the verification strategy
+- explicit uncertainties and contradiction-search targets
+- the investigation and review subagent budget
+- a compact, decision-complete plan in the output order from Step 4
+- an approval gate that stops before file edits
+
+## Stop Rules
+
+Stop planning and ask for user input when:
+
+- the intended behavior or acceptance criteria cannot be inferred from the issue, repository, or conversation
+- multiple implementation directions have different user-visible behavior, risk, or cost
+- the likely write scope expands materially beyond the user's stated task
+
+Stop expanding repository search when:
+
+- the likely representation categories for the changed behavior have been checked, or
+- another targeted search pass does not reveal a new adjacent representation or contradiction.
+
+## Step 1: Ground The Task
 
 - If `$ARGUMENTS` is an issue number, inspect it with `gh issue view $ARGUMENTS`
 - Identify scope, affected areas, likely verification steps, and likely integration boundaries
@@ -31,14 +66,9 @@ Before planning edits, identify where the changed behavior is represented in the
 - tests or stories
 - integration or orchestration
 
-Treat this as a synchronization checklist, not just an investigation note.
+Treat this as a grounding and synchronization checklist, not just an investigation note.
 
 Start from the entry-point files, then search nearby files and imports with `rg`.
-
-Stop expanding the search when:
-
-- you have checked the likely representation categories for the changed behavior, or
-- another search pass does not reveal a new adjacent representation
 
 If a representation is intentionally unchanged, record why before approval is requested.
 
@@ -109,19 +139,18 @@ If no subagent is used, do not merely say the work was small or coupled. Briefly
 
 ## Step 4: Build The Plan
 
-Produce a concrete implementation plan that includes:
+Produce a concrete implementation plan in this order:
 
-- the changed behavior in one sentence
-- the size classification with reasoning
-- the representations being synchronized
-- entry-point files and other expected files to touch
-- files or representations checked and intentionally left unchanged
-- acceptance criteria
-- verification strategy
-- rollback or guardrail notes when the change is risky
-- explicit uncertainties and contradiction-search targets
-- reviewer-assigned concerns for execution, if already known
-- the subagent budget expected during execution and review
+1. **Changed behavior:** state the changed behavior or product rule in one sentence.
+2. **Size:** classify the work and give the concern-based reasoning.
+3. **Representations:** name the representations being synchronized and any representations intentionally left unchanged.
+4. **Scope:** list entry-point files, other expected files or modules to touch, and explicit out-of-scope work.
+5. **Acceptance criteria:** define what must be true for implementation to be complete.
+6. **Verification:** name the checks, tests, stories, or manual validation expected.
+7. **Risks:** include rollback or guardrail notes when risky, explicit uncertainties, contradiction-search targets, and reviewer-assigned concerns if known.
+8. **Approval:** state the subagent budget expected during execution and review, then stop for user approval before edits.
+
+Keep the presented plan decision-complete but compact. Do not include raw research transcript, long reviewer dialogue, or every inspected file unless that detail changes scope, risk, verification, or implementation ownership.
 
 For Medium and Large work, also include:
 
@@ -177,6 +206,7 @@ After the review:
 - if you decide not to adopt a reviewer suggestion, explain why
 - present the revised plan, not the pre-review draft
 - if meaningful reviewer concerns remain unresolved, list them explicitly as approval risks
+- include only review findings that affected the plan or remain relevant to approval
 
 Do not present the plan as approval-ready until this review pass is complete.
 

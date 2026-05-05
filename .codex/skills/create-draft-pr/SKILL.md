@@ -6,6 +6,21 @@ argument-hint: "[issue-number]"
 
 # Create Draft PR
 
+## Success Criteria
+
+A successful run creates a Draft PR whose title, body, base branch, head branch, and issue links match the actual branch diff.
+
+The final report should include the PR URL and mention any relevant caveat, such as uncommitted local changes that were intentionally left out.
+
+## Stop Rules
+
+Stop before pushing or creating the PR when:
+
+- the current branch cannot be identified
+- the diff contains unrelated or unexplained changes that make the PR scope ambiguous
+- the related issue cannot be linked correctly and the PR body would be misleading
+- required template content cannot be completed without inventing unverified information
+
 ## Steps
 
 1. Understand full scope across all commits on branch:
@@ -36,6 +51,7 @@ argument-hint: "[issue-number]"
 
 - Default to Draft. Mark Ready for Review only on explicit request.
 - Always push head branch before `gh pr create`.
+- Base the title and body on the actual diff, not only the branch name or user intent.
 - Decide whether to use `closes` by checking the actual issue completion conditions against the current branch diff, not just by matching branch name or intent.
 - Do not keep template headings that add no review value.
 - No empty fields or placeholder text.

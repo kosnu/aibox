@@ -38,6 +38,30 @@ Before editing:
 
 If there is no approved plan, stop and tell the user to run `task-plan` first or provide an approved plan directly.
 
+## Success Criteria
+
+A successful `task-execute` response ships the approved changed behavior and reports:
+
+- the implementation outcome
+- the representations that were synchronized
+- the verification that ran
+- the review findings fixed or remaining risks
+- the review budget used and why it fit the approved size/risk classification
+- any representations checked and intentionally left unchanged
+- any scope clarification that was handled without requiring re-approval
+
+## Stop Rules
+
+Stop execution and ask for re-approval when:
+
+- the approved behavior or acceptance criteria would change
+- the likely write scope expands materially beyond the approved plan
+- the size/risk classification changes
+- the UX direction, performance characteristics, rollout sequence, or verification strategy changes materially
+- the approved plan is missing a representation that must change to keep behavior synchronized
+
+Do not turn these stops into a new approval-ready plan inside `task-execute`. Report the gap and wait for the user to re-plan or approve the scope change.
+
 ## Step 1: Prepare Execution
 
 Turn the approved plan into an execution checklist:
@@ -180,7 +204,7 @@ Treat completion as "no convincing contradiction found," not merely "tests passe
 
 ## Step 6: Done
 
-Summarize:
+Summarize in this order:
 
 - outcome and changed behavior shipped
 - verification run
@@ -188,6 +212,9 @@ Summarize:
 - review budget used and why it fit the size/risk classification
 - final synchronization status of each representation
 - representations checked and intentionally unchanged
+- minor scope clarifications handled without re-approval, if any
+
+Keep the final report concise. Do not reconstruct the original plan, list every inspected file, or propose a new plan unless execution stopped for re-approval.
 
 ## Rules
 

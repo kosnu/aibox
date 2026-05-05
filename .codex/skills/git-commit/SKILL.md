@@ -5,6 +5,21 @@ description: Stages and commits changes with Japanese commit messages. Use when 
 
 # Commit Changes
 
+## Success Criteria
+
+A successful run creates one or more narrowly scoped commits with Japanese messages, verified staged scope, and the required co-author trailer.
+
+The final report should include the latest commit hash and subject.
+
+## Stop Rules
+
+Stop before staging or committing when:
+
+- there are no in-scope changes to commit
+- changed files include unrelated work that cannot be separated safely
+- required verification from `CLAUDE.md` or `AGENTS.md` fails
+- the intended commit split is ambiguous enough that staging would risk mixing concerns
+
 ## Steps
 
 1. Inspect unstaged changes with fixed lightweight commands:
@@ -38,6 +53,7 @@ Types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`
 
 - Do not include unrelated changes.
 - Do not read full diffs for generated files, lockfiles, or vendored files unless the user explicitly asks.
+- Stage only the files that belong to the current commit concern.
 - When running `git commit`, pass the subject/body/trailer with separate `-m` flags instead of embedding literal `\n` in one shell string.
 
 ## Next Action
