@@ -42,10 +42,6 @@ Stop before creating a branch when:
      git switch -c codex/{slug} origin/main
      ```
 
-## Next Action
-
-Suggest `$task $ARGUMENTS` after branch creation when the branch is tied to a task or issue.
-
 ## Rules
 
 - If the user did not provide any branch topic and there is no Issue number, inspect the current diff first and infer a reasonable topic yourself.

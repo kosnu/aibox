@@ -64,20 +64,6 @@ Add these only when the diff justifies them:
 
 If the diff has a domain-specific risk not listed above, name that reviewer explicitly and define the concern in one sentence.
 
-## Review Output Categories
-
-Separate required findings from optional comment candidates.
-
-- **Must findings:** concrete correctness, regression, data loss, security, accessibility, migration, or missing-test problems that should be addressed before handoff.
-- **Optional comment candidates:** non-blocking review comments that may improve readability, test maintainability, or changeability.
-
-Optional comment candidates must be labeled as either:
-
-- **IMO:** a meaningful but non-blocking suggestion that improves readability, test maintainability, or changeability.
-- **Nitpick:** a small local cleanup that is easy to ignore without harming the change.
-
-Do not mix optional candidates into Must findings. A candidate should be written as a comment-ready sentence, but it must not overstate risk or sound like a blocking bug report.
-
 ## Delegating Review
 
 Before spawning any reviewer, decide what the main agent will review locally and what can run in parallel.
@@ -86,8 +72,7 @@ Each reviewer prompt must include:
 
 - the exact review target, such as diff, files, issue, or plan excerpt
 - the assigned perspective and concerns
-- the expected output format: Must findings first, with severity, file/line when available, evidence, and suggested fix
-- the instruction to include optional IMO/Nitpick comment candidates after Must findings when they would improve readability, test maintainability, or changeability
+- the expected output format: findings first, with severity, file/line when available, evidence, and suggested fix
 - the instruction to avoid editing files
 - the instruction to ignore unrelated dirty changes unless they affect the reviewed diff
 
@@ -96,7 +81,7 @@ Keep reviewer prompts narrow. Do not ask every reviewer to perform a general rev
 Example reviewer prompt:
 
 ```text
-Review the implemented diff only from the QA Engineer perspective. Focus on missing test cases, regression scenarios, fixtures, mocks, and whether existing verification proves the intended behavior. Do not edit files. Return Must findings first, ordered by severity, with file/line references when available. After that, include optional IMO/Nitpick comment candidates only when they would improve readability, test maintainability, or changeability, then residual test gaps.
+Review the implemented diff only from the QA Engineer perspective. Focus on missing test cases, regression scenarios, fixtures, mocks, and whether existing verification proves the intended behavior. Do not edit files. Return findings first, ordered by severity, with file/line references when available, then residual test gaps.
 ```
 
 ## Main Agent Checklist
@@ -110,7 +95,6 @@ The main agent must always perform a local checklist review, even when subagents
 - implementation follows nearby repository patterns
 - edge cases and error states are handled
 - performance, security, accessibility, and migration risks are either covered or explicitly not applicable
-- optional IMO/Nitpick comment candidates are considered for readability, test maintainability, and changeability without being treated as blocking findings
 
 Prefer contradiction search: look for evidence that the old behavior still exists or that another representation was missed.
 
@@ -119,29 +103,22 @@ Prefer contradiction search: look for evidence that the old behavior still exist
 Merge reviewer feedback into one judgment.
 
 - Treat concrete correctness, regression, data loss, security, or missing-test findings as actionable unless evidence proves otherwise.
-- Keep optional IMO/Nitpick comment candidates separate from actionable Must findings.
 - Deduplicate overlapping findings and keep the clearest evidence.
-- If a reviewer Must finding or optional candidate is not adopted, record the reason briefly when it affects the final report.
+- If a reviewer suggestion is not adopted, record the reason briefly.
 - If the user asked to fix findings, fix only the in-scope issues, then rerun the relevant review or checklist for the changed area.
 - If review exposes a material scope or behavior change, stop and ask for approval before fixing it.
 
 ## Final Report
 
-Report Must findings first, ordered by severity.
+Report findings first, ordered by severity.
 
-For each Must finding, include:
+For each finding, include:
 
 - severity or priority
 - file and line when available
 - what is wrong
 - why it matters
 - suggested fix
-
-Then report Optional comment candidates in a separate section, grouped by IMO and Nitpick. For each candidate, include:
-
-- label, file, and line when available
-- comment-ready wording
-- why it may improve readability, test maintainability, or changeability
 
 After findings, include:
 
@@ -150,4 +127,4 @@ After findings, include:
 - verification already considered or still missing
 - residual risks or test gaps
 
-If there are no Must findings, say that clearly before listing optional candidates. If there are no optional candidates either, say that clearly. Do not produce a long process transcript.
+If there are no findings, say that clearly and list the perspectives checked plus any remaining verification gaps. Do not produce a long process transcript.
