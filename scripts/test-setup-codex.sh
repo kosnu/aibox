@@ -18,25 +18,26 @@ log_fourth="$(mktemp "$tmp_home/setup-codex-test-4.XXXXXX.log")"
 echo "[test] 初回実行でリンクが作成されること"
 HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_first"
 
-[ -d "$tmp_home/.codex/skills" ]
-[ ! -L "$tmp_home/.codex/skills" ]
-[ -L "$tmp_home/.codex/skills/setup-codex-home" ]
+[ -d "$tmp_home/.agents/skills" ]
+[ ! -L "$tmp_home/.agents/skills" ]
+[ -L "$tmp_home/.agents/skills/setup-codex-home" ]
 
 echo "[test] 再実行で冪等（skip）になること"
 HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_second"
 grep -q "^\[skip\]" "$log_second"
 
-echo "[test] 既存ファイルが .bak に退避されること"
+echo "[test] config.toml はリンクされず既存ファイルも保持されること"
 rm -f "$tmp_home/.codex/config.toml"
 echo "local" >"$tmp_home/.codex/config.toml"
 HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_third"
-[ -f "$tmp_home/.codex/config.toml.bak" ]
-[ -L "$tmp_home/.codex/config.toml" ]
+[ ! -e "$tmp_home/.codex/config.toml.bak" ]
+[ ! -L "$tmp_home/.codex/config.toml" ]
+grep -q "^local$" "$tmp_home/.codex/config.toml"
 
 echo "[test] source から削除済みの子リンクが削除されること"
-ln -s "$PROJECT_ROOT/.codex/skills/removed-skill" "$tmp_home/.codex/skills/removed-skill"
+ln -s "$PROJECT_ROOT/.agents/skills/removed-skill" "$tmp_home/.agents/skills/removed-skill"
 HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_fourth"
-[ ! -e "$tmp_home/.codex/skills/removed-skill" ]
-[ ! -L "$tmp_home/.codex/skills/removed-skill" ]
+[ ! -e "$tmp_home/.agents/skills/removed-skill" ]
+[ ! -L "$tmp_home/.agents/skills/removed-skill" ]
 
 echo "[ok] all checks passed"

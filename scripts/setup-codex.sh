@@ -6,6 +6,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_DIR="$PROJECT_ROOT/.codex"
 TARGET_DIR="$HOME/.codex"
+SKILLS_SOURCE_DIR="$PROJECT_ROOT/.agents/skills"
+SKILLS_TARGET_DIR="$HOME/.agents/skills"
 
 # ソースディレクトリがなければ終了
 if [ ! -d "$SOURCE_DIR" ]; then
@@ -75,6 +77,8 @@ remove_stale_child_links() {
 # .codex/ の直下を走査
 find "$SOURCE_DIR" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' src_entry; do
   name="$(basename "$src_entry")"
+  [ "$name" = "skills" ] && continue
+  [ "$name" = "config.toml" ] && continue
   target_entry="$TARGET_DIR/$name"
 
   if [ -f "$src_entry" ]; then
@@ -88,7 +92,7 @@ find "$SOURCE_DIR" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' sr
     ensure_real_dir "$target_entry"
     remove_stale_child_links "$src_entry" "$target_entry"
 
-    # 子要素（例: .codex/skills/hoge）をリンク
+    # 子要素（例: .codex/hooks/hoge）をリンク
     find "$src_entry" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' src_child; do
       child_name="$(basename "$src_child")"
       target_child="$target_entry/$child_name"
@@ -96,3 +100,14 @@ find "$SOURCE_DIR" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' sr
     done
   fi
 done
+
+if [ -d "$SKILLS_SOURCE_DIR" ]; then
+  ensure_real_dir "$SKILLS_TARGET_DIR"
+  remove_stale_child_links "$SKILLS_SOURCE_DIR" "$SKILLS_TARGET_DIR"
+
+  find "$SKILLS_SOURCE_DIR" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' src_skill; do
+    skill_name="$(basename "$src_skill")"
+    target_skill="$SKILLS_TARGET_DIR/$skill_name"
+    link_entry "$src_skill" "$target_skill"
+  done
+fi
