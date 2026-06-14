@@ -13,8 +13,9 @@ description: Links repository .codex entries into ~/.codex with symlinks. Use wh
 
 ## Behavior
 
-- Link each direct child of repository `.codex` into `~/.codex`.
+- Link each direct child of repository `.codex` into `~/.codex`, except `config.toml` and `skills`.
 - Keep `~/.codex` itself as a real directory; do not replace it with a single symlink.
+- Keep `~/.codex/config.toml` as a home-local config. If it is an old symlink to the repository config, remove that link and restore `~/.codex/config.toml.bak` when present.
 - If the target already points to the correct source, skip it.
 - If a conflicting file, directory, or symlink exists, move it to `${target}.bak` before linking.
 

@@ -18,7 +18,7 @@ Stop before creating a branch when:
 
 - no issue number or topic was provided and the clean worktree gives no reasonable topic to infer
 - `origin/main` cannot be fetched
-- the proposed branch name already exists locally or remotely and choosing a different name would require user intent
+- branch creation fails for a reason other than an existing local or remote branch name
 
 ## Steps
 
@@ -30,7 +30,7 @@ Stop before creating a branch when:
    - With an Issue number, generate the slug from the Issue title.
    - Without an Issue number, generate the slug from the provided branch topic.
    - If no topic was provided, infer the slug from the current diff. Prefer the dominant changed area or intent, such as `update-git-branch-skill`, `fix-login-form`, or `add-user-api`.
-3. Create the branch from latest `main` without asking for confirmation:
+3. Create the branch from latest `main` without asking for confirmation. Do not check whether the branch already exists before the first create attempt:
    - With an Issue number:
      ```bash
      git fetch origin main
@@ -41,6 +41,11 @@ Stop before creating a branch when:
      git fetch origin main
      git switch -c codex/{slug} origin/main
      ```
+4. If the first `git switch -c` attempt fails because the branch name already exists, inspect local and remote branches only then:
+   - Check the conflicting name locally and remotely with targeted commands such as `git branch --list <name>` and `git ls-remote --heads origin <name>`.
+   - Choose the next concise ASCII suffix for the same intent, such as `issue-{number}/{slug}-2` or `codex/{slug}-2`; increment the suffix if that also exists.
+   - Retry `git switch -c <alternate-name> origin/main` without asking the user.
+   - Stop if the failure was not caused by an existing branch name, or if an alternate name cannot be chosen without changing the user intent.
 
 ## Rules
 
@@ -48,4 +53,4 @@ Stop before creating a branch when:
 - Only ask the user for a branch topic when there is no Issue number and the worktree is clean, so no reasonable topic can be inferred.
 - Keep branch names ASCII-only and concise.
 - Prefer `issue-{number}/{slug}` for Issue-driven work and `codex/{slug}` for ad hoc work.
-- Do not create multiple branch candidates; choose the single best branch name from the available issue, topic, or diff evidence.
+- Do not precompute or check multiple branch candidates before the first create attempt; choose an alternate only after branch creation fails due to a name conflict.

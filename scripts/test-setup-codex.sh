@@ -34,6 +34,27 @@ HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_third"
 [ ! -L "$tmp_home/.codex/config.toml" ]
 grep -q "^local$" "$tmp_home/.codex/config.toml"
 
+echo "[test] config.toml がなければ通常ファイルとして作成されること"
+rm -f "$tmp_home/.codex/config.toml" "$tmp_home/.codex/config.toml.bak"
+HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_third"
+[ ! -L "$tmp_home/.codex/config.toml" ]
+cmp -s "$PROJECT_ROOT/.codex/config.toml" "$tmp_home/.codex/config.toml"
+
+echo "[test] repo config.toml への既存リンクは解除され、backup があれば復元されること"
+rm -f "$tmp_home/.codex/config.toml" "$tmp_home/.codex/config.toml.bak"
+ln -s "$PROJECT_ROOT/.codex/config.toml" "$tmp_home/.codex/config.toml"
+echo "home" >"$tmp_home/.codex/config.toml.bak"
+HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_third"
+[ ! -L "$tmp_home/.codex/config.toml" ]
+grep -q "^home$" "$tmp_home/.codex/config.toml"
+
+echo "[test] repo config.toml への既存リンクは backup がなければ通常ファイルとしてコピーされること"
+rm -f "$tmp_home/.codex/config.toml" "$tmp_home/.codex/config.toml.bak"
+ln -s "$PROJECT_ROOT/.codex/config.toml" "$tmp_home/.codex/config.toml"
+HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_third"
+[ ! -L "$tmp_home/.codex/config.toml" ]
+cmp -s "$PROJECT_ROOT/.codex/config.toml" "$tmp_home/.codex/config.toml"
+
 echo "[test] source から削除済みの子リンクが削除されること"
 ln -s "$PROJECT_ROOT/.agents/skills/removed-skill" "$tmp_home/.agents/skills/removed-skill"
 HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_fourth"

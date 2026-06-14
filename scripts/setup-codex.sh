@@ -74,6 +74,35 @@ remove_stale_child_links() {
   done
 }
 
+restore_home_config() {
+  local source_config="$SOURCE_DIR/config.toml"
+  local target_config="$TARGET_DIR/config.toml"
+  local backup_config="${target_config}.bak"
+
+  if [ ! -e "$target_config" ] && [ ! -L "$target_config" ] && [ -f "$source_config" ]; then
+    echo "[copy] $source_config -> $target_config"
+    cp -p "$source_config" "$target_config"
+    return
+  fi
+
+  if [ ! -L "$target_config" ] || [ "$(readlink "$target_config")" != "$source_config" ]; then
+    return
+  fi
+
+  echo "[unlink] $target_config (repo config is not linked)"
+  rm "$target_config"
+
+  if [ -e "$backup_config" ] || [ -L "$backup_config" ]; then
+    echo "[restore] $backup_config -> $target_config"
+    mv "$backup_config" "$target_config"
+  elif [ -f "$source_config" ]; then
+    echo "[copy] $source_config -> $target_config"
+    cp -p "$source_config" "$target_config"
+  fi
+}
+
+restore_home_config
+
 # .codex/ の直下を走査
 find "$SOURCE_DIR" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' src_entry; do
   name="$(basename "$src_entry")"
