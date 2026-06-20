@@ -1,0 +1,40 @@
+---
+name: repo
+description: Unified repository workflow entrypoint for creating GitHub issues, creating branches, committing changes, creating open pull requests, and shipping work end to end. Use when the user requests repo work such as "issue作って", "ブランチを切って", "コミットして", "PRを作って", "shipして", or invokes "$repo issue|branch|commit|pr|ship".
+---
+
+# Repo Workflow
+
+Use this skill as the primary repository workflow for issue creation, branch creation, commits, open pull requests, and end-to-end shipping.
+
+## Mode Selection
+
+- `issue`: Draft and create a GitHub issue. Read `references/issue.md`.
+- `branch`: Create and switch to a branch from latest `main`. Read `references/branch.md`.
+- `commit`: Stage and commit scoped changes. Read `references/commit.md`.
+- `pr`: Push the branch and create an open pull request. Read `references/pr.md`.
+- `ship`: Run only the needed modes in order: `issue`, `branch`, `commit`, `pr`.
+
+Infer the mode from `$ARGUMENTS` and the user's wording. If the requested mode is ambiguous, inspect the repository state first and choose the smallest safe workflow.
+
+For `ship`, read only the reference files needed for the missing steps. Do not create duplicate issues, branches, commits, or PRs when the current repository state already satisfies a step.
+
+## Decision Style
+
+Prefer deciding and executing over asking.
+
+- Inspect local and GitHub state before requesting input.
+- Choose the smallest safe workflow that matches the user's command.
+- Do not request confirmation when the requested side effect is already clear.
+- When a side effect requires explicit approval, present the exact artifact and the exact approval phrase.
+- If required information is still missing after inspection, stop with one concrete missing input instead of asking an open-ended question.
+
+## Pull Request Default
+
+Create open PRs by default. Use draft PRs only when the user explicitly requests draft.
+
+## Subagents
+
+Do not use subagents by default.
+
+Use a subagent only for summarization or planning support when it is likely to reduce main-agent work, such as a large diff, complex commit splitting, CI or review investigation, or PR body synthesis. Keep all git and GitHub side effects in the main agent.

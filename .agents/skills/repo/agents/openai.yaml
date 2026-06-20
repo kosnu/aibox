@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repo"
+  short_description: "Issue, branch, commit, and PR workflow"
+  default_prompt: "Use $repo to create an issue, branch, commit, or open PR for this repository."
