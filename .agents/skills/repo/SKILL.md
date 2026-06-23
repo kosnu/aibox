@@ -33,6 +33,14 @@ Prefer deciding and executing over asking.
 
 Create open PRs by default. Use draft PRs only when the user explicitly requests draft.
 
+## GitHub Data Access
+
+Prefer `gh api graphql` for GitHub reads that need multiple fields, relationship checks, or precise state in one call.
+
+- Use GraphQL for issue/PR metadata, linked issues, project fields, review status, merge state, and branch/head/base details when those facts affect decisions.
+- Use narrow `gh issue view`, `gh pr view`, or `gh project list` only for simple one-object reads where GraphQL would add no value.
+- Keep write operations on explicit commands such as `gh issue create` and `gh pr create` unless GraphQL is required for a capability not available through `gh` subcommands.
+
 ## Subagents
 
 Do not use subagents by default.

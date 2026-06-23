@@ -10,7 +10,7 @@ Create one concise ASCII branch from latest `main`.
 
 ## Steps
 
-1. If `$ARGUMENTS` is a number, run `gh issue view <number>` and derive the slug from the issue title.
+1. If `$ARGUMENTS` is a number, fetch the issue title with `gh api graphql` and derive the slug from that title. Use `gh issue view <number>` only as a narrow fallback.
 2. If `$ARGUMENTS` is non-empty and not a number, derive the slug from that topic.
 3. If no topic is provided, inspect `git status --short` and `git diff --stat`, then infer the slug from the changed area.
 4. Generate a lowercase ASCII slug, hyphen-separated, 2-4 words.

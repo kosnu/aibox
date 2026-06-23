@@ -13,7 +13,7 @@ Create one focused GitHub issue.
 
 1. Inspect `.github/ISSUE_TEMPLATE/` when it exists.
 2. If templates exist, read likely templates and choose the best match from the request.
-3. Run `gh project list --limit 20`.
+3. Use `gh api graphql` for project discovery when project metadata affects issue placement. Use `gh project list --limit 20` only for a simple project count/name check.
 4. Auto-select a project only when exactly one project exists.
 5. Draft a concise title and body from the user's request and selected template.
 6. Remove template frontmatter and omit empty placeholder sections.
