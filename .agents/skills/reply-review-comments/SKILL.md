@@ -9,7 +9,7 @@ Use this skill when PR review comments have already been handled through code ch
 
 ## Success Criteria
 
-A successful run replies only to review threads whose handling is clear, uses concrete explanation, includes commit IDs only when attributable, and resolves only fully completed threads.
+A successful run replies only to review threads whose handling is clear, uses concrete Japanese explanation, includes commit IDs only when attributable, and resolves only fully completed threads.
 
 The final report should distinguish replied threads from resolved threads and call out any skipped threads with a brief reason.
 
@@ -48,12 +48,14 @@ Stop before posting replies or resolving threads when:
    - Reply only when the requested change is clearly satisfied by the current branch diff, recent commits, or implementation state.
    - Do not treat touching the same file as sufficient proof that the requested change was handled.
 4. Draft one reply per thread.
-   - Explain what changed or how the comment was handled in 1-3 concrete sentences.
+   - Write replies in Japanese, even when examples, sample replies, review comments, code, branch names, or commit messages are in English.
+   - Sample language is not output-language guidance. English samples may stay English; still write the actual reply in Japanese.
+   - Explain what changed or how the comment was handled in 1-3 concrete Japanese sentences.
    - Include a commit ID only when the change is committed and the commit-to-comment mapping is clear.
    - Do not wrap commit IDs in backticks.
    - Put one ASCII space before and after each commit ID.
    - Example: `Handled in commit  abc1234  and updated the validation path accordingly.`
-   - If the change is not committed, do not invent a commit ID. Say that the change is not committed if that matters.
+   - If the change is not committed, do not invent a commit ID. Explain in Japanese that the change is not committed if that matters.
 5. Post the replies.
    - For inline review threads, use the `addPullRequestReviewThreadReply` GraphQL mutation through `gh api graphql`.
    - Reply to the target thread ID from `reviewThreads.nodes.id`; do not post through comment-ID reply endpoints.
@@ -129,7 +131,9 @@ query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
 
 ## Reply Quality Bar
 
-- Do not reply with only "fixed" or "addressed"; summarize the concrete handling.
+- Reply in Japanese by default. Do not switch to English because sample text, sample replies, GitHub comments, or implementation artifacts are written in English.
+- Treat English examples as structural examples only. Do not rewrite samples just to make them Japanese; produce the actual GitHub reply in Japanese.
+- Do not reply with only "fixed" or "addressed"; summarize the concrete handling in Japanese.
 - Mention file names or function names only when they help the reviewer understand the response.
 - If explanation alone addressed the comment, do not invent a code change.
 - Do not resolve partially handled threads.
