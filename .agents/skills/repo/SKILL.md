@@ -19,6 +19,16 @@ Infer the mode from `$ARGUMENTS` and the user's wording. If the requested mode i
 
 For `ship`, read only the reference files needed for the missing steps. Do not create duplicate issues, branches, commits, or PRs when the current repository state already satisfies a step.
 
+## Command Execution
+
+Run each `git`, `gh`, and shell command as a separate command invocation.
+
+- Do not join commands with shell control operators such as `&&`, `||`, `;`, or `|`.
+- Do not use subshells or command substitution to combine dependent commands.
+- Let each command finish, inspect the result, then run the next command.
+- Keep commands in a form that matches narrow approval rules such as `git fetch origin main`, `git switch`, `git add`, `git commit -m`, `git push`, `gh api`, `gh issue create`, and `gh pr create`.
+- For `ship`, execute the selected modes step by step; never collapse branch, commit, push, and PR creation into one shell line.
+
 ## Decision Style
 
 Prefer deciding and executing over asking.

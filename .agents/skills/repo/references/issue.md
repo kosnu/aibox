@@ -23,6 +23,7 @@ Create one focused GitHub issue.
 
 ## Rules
 
+- Run `gh api`, `gh project list`, and `gh issue create` as separate command invocations. Do not chain them with `&&`, `||`, `;`, or pipes.
 - Keep the issue focused on the requested outcome.
 - Do not add implementation choices the user did not approve.
 - Choose the issue template and project yourself when there is one best match.

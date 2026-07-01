@@ -27,6 +27,7 @@ Create an open pull request by default.
 
 ## Rules
 
+- Run `git`, `gh api`, `gh pr create`, and cleanup commands as separate command invocations. Do not chain them with `&&`, `||`, `;`, or pipes.
 - Default to open PR. Use draft only when the user explicitly requests it.
 - Keep the body short and useful for review.
 - Do not keep empty template headings or placeholder text.

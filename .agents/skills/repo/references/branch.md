@@ -25,6 +25,7 @@ Create one concise ASCII branch from latest `main`.
 
 ## Rules
 
+- Run `git fetch`, `git switch`, `git branch`, and `git ls-remote` as separate command invocations. Do not chain them with `&&`, `||`, `;`, or pipes.
 - Do not pre-check branch existence before the first create attempt.
 - Do not request confirmation before branch creation when the topic is known or inferable.
 - Stop with one concrete missing topic only when no issue/topic is provided and the worktree is clean.

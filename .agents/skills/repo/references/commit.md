@@ -35,6 +35,7 @@ Types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`.
 
 ## Rules
 
+- Run `git status`, `git diff`, `git add`, `git commit`, and `git log` as separate command invocations. Do not chain them with `&&`, `||`, `;`, or pipes.
 - Do not include unrelated changes.
 - Do not read full diffs for generated files, lockfiles, or vendored files unless the user explicitly requests it.
 - Do not request extra confirmation before committing when the scope is clear.
