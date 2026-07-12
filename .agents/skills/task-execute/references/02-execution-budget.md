@@ -31,3 +31,19 @@ Do not use subagents to rebuild an approval-ready plan, perform `$task-plan`-sty
 - **Large:** use multiple workers only when each has disjoint ownership and integration remains controlled.
 
 If execution stays local, briefly record the main-agent checks and why delegation would not reduce risk or latency.
+
+## Delegation Contract
+
+Give each subagent one bounded task, explicit owned files or modules, required evidence, and a stop condition.
+
+Read-only explorers return:
+
+```text
+question
+findings[]
+evidence[{path_or_url, line_or_id, reason}]
+unresolved[]
+stop_reason
+```
+
+Workers return changed paths, behavior implemented, verification run, and unresolved risks. Allow at most one retry for missing required evidence or an incomplete handoff. The main agent verifies material results, does not repeat completed work, integrates changes, and owns final review and verification.

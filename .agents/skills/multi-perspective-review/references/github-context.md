@@ -43,4 +43,4 @@ Pass each reviewer only the excerpts relevant to its assigned concern. Preserve 
 
 Routine retrieval is a deterministic tool task and stays with the main agent. Delegating it normally duplicates context because the main agent must consume the returned material afterward.
 
-Use a lower-cost explorer only for an unusually large review history when it can perform a bounded extraction such as grouping comments by concern, removing superseded discussion, or mapping Issue criteria to files. Give it raw GitHub artifacts and require a compact structured result with source identifiers. The main agent still verifies material findings and owns the final judgment.
+Use a lower-cost explorer only for an unusually large review history when it can perform a bounded extraction such as grouping comments by concern, removing superseded discussion, or mapping Issue criteria to files. Apply the result contract from `reviewer-contract.md`; the main agent still verifies material evidence and owns the final judgment.
