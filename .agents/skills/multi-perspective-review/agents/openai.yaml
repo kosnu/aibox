@@ -1,4 +1,4 @@
 interface:
   display_name: "Multi Perspective Review"
-  short_description: "Review implemented diffs from focused expert perspectives"
-  default_prompt: "Use $multi-perspective-review to review the implemented diff with budgeted expert perspectives and report findings first."
+  short_description: "Review diffs with PR, issue, and review context"
+  default_prompt: "Use $multi-perspective-review to review the implemented diff against its PR, relevant issue, and review comments with budgeted expert perspectives."

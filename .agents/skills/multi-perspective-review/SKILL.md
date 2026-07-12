@@ -19,9 +19,13 @@ Before assigning reviewers, the main agent must inspect:
 
 - the user request or approved plan that explains the intended behavior
 - the current diff and touched files
+- the current branch's PR summary and review comments when a PR exists
+- the linked or referenced issue when it materially defines intent, scope, acceptance criteria, or reviewer context
 - relevant tests, stories, fixtures, schemas, configs, or docs changed by the diff
 - verification already run, if any
 - dirty worktree state that may be unrelated to the review target
+
+Read [references/github-context.md](references/github-context.md) whenever the current branch has a PR or the user identifies a PR. It defines the required GitHub context, Issue inclusion rules, and efficient retrieval policy.
 
 Do not edit files during the review unless the user also asked to fix findings. If the user only asked for review, report findings and stop.
 
@@ -71,12 +75,15 @@ Before spawning any reviewer, decide what the main agent will review locally and
 Each reviewer prompt must include:
 
 - the exact review target, such as diff, files, issue, or plan excerpt
+- the relevant PR summary, prior review findings, and Issue requirements collected by the main agent
 - the assigned perspective and concerns
 - the expected output format: findings first, with severity, file/line when available, evidence, and suggested fix
 - the instruction to avoid editing files
 - the instruction to ignore unrelated dirty changes unless they affect the reviewed diff
 
 Keep reviewer prompts narrow. Do not ask every reviewer to perform a general review.
+
+Do not delegate routine GitHub context retrieval to a subagent. The main agent should fetch it once and provide only the relevant excerpts to reviewers. A cheap explorer may retrieve or normalize context only when the GitHub history is unusually large and that work can replace equivalent main-agent reading; it must return structured evidence without making the final review judgment.
 
 Example reviewer prompt:
 
@@ -89,6 +96,9 @@ Review the implemented diff only from the QA Engineer perspective. Focus on miss
 The main agent must always perform a local checklist review, even when subagents are used:
 
 - intended behavior is actually implemented
+- the diff matches the PR title/body and does not silently exceed its stated scope
+- prior review comments are addressed or intentionally superseded, and the same defect is not reintroduced elsewhere
+- linked Issue acceptance criteria are satisfied when the Issue is part of the review basis
 - old behavior or stale assumptions do not remain elsewhere
 - tests and fixtures match the changed behavior
 - public interfaces, types, schema, mocks, docs, and stories are synchronized when relevant
