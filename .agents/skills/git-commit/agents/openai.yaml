@@ -1,7 +1,0 @@
-interface:
-  display_name: "Commit Changes"
-  short_description: "Stage and commit only verified in-scope changes"
-  default_prompt: "Use $git-commit to inspect scope, run required verification, stage only in-scope changes, commit with a Japanese message, and report the commit."
-
-policy:
-  allow_implicit_invocation: true

@@ -1,7 +1,0 @@
-interface:
-  display_name: "Create Draft PR"
-  short_description: "Create a draft PR from the verified branch diff"
-  default_prompt: "Use $create-draft-pr to inspect the branch diff, write a concise template-aware Draft PR, push the branch, create the PR, and verify the result."
-
-policy:
-  allow_implicit_invocation: true

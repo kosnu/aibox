@@ -1,7 +1,0 @@
-interface:
-  display_name: "Create Branch"
-  short_description: "Create a concise branch from an issue, topic, or diff"
-  default_prompt: "Use $git-branch to infer or read the branch topic, fetch main, create one concise branch, switch to it, and report the branch name."
-
-policy:
-  allow_implicit_invocation: true

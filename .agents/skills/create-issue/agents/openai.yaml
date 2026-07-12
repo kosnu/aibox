@@ -1,7 +1,0 @@
-interface:
-  display_name: "Create Issue"
-  short_description: "Draft and create a template-aware GitHub issue"
-  default_prompt: "Use $create-issue to select the right template, draft a concise issue, get explicit approval, create it, and report the URL."
-
-policy:
-  allow_implicit_invocation: true
