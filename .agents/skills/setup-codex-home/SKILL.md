@@ -1,6 +1,6 @@
 ---
 name: setup-codex-home
-description: Sync repository .codex entries and .agents skills into the user's home directories with file-level symlinks while preserving a home-local config.toml. Use when the user asks to set up, relink, or verify this repository's Codex home configuration.
+description: Sync repository .codex entries and .agents skills into the user's home directories with entry-level symlinks, without directory-level symlinks, while preserving a home-local config.toml. Use when the user asks to set up, relink, or verify this repository's Codex home configuration.
 ---
 
 # Setup Codex Home
@@ -21,7 +21,8 @@ Finish only after the repository entries are synchronized, stale managed links a
 
 ## Behavior
 
-- Link root files and file-level children from repository `.codex` into `~/.codex`, except `config.toml` and `skills`.
+- Link repository `.codex` root file entries and direct children of its directories into matching home locations, except `config.toml` and `skills`.
+- Keep each managed home directory as a real directory; link its direct child entries individually, whether a child is a file or directory.
 - Keep `~/.codex` itself as a real directory; do not replace it with a single symlink.
 - Keep `~/.codex/config.toml` as a home-local config. If it is an old symlink to the repository config, remove that link and restore `~/.codex/config.toml.bak` when present.
 - Keep `~/.agents/skills` as a real directory and link each repository `.agents/skills` child individually.
