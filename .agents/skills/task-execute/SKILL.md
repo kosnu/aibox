@@ -1,7 +1,6 @@
 ---
 name: task-execute
 description: Execute an approved repository task plan, keep changed behavior synchronized, and use size/risk-based subagent budgets for implementation and review. Use when the user says "$task-execute" or asks to implement an approved plan.
-argument-hint: "[approved plan or task description with explicit approval]"
 ---
 
 # Task Execution Workflow

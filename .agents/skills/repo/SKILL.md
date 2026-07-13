@@ -55,4 +55,16 @@ Prefer `gh api graphql` for GitHub reads that need multiple fields, relationship
 
 Do not use subagents by default.
 
-Use a subagent only for summarization or planning support when it is likely to reduce main-agent work, such as a large diff, complex commit splitting, CI or review investigation, or PR body synthesis. Keep all git and GitHub side effects in the main agent.
+Use a lower-cost subagent only for a bounded read-only reduction stage when a large diff, CI history, or review history can be reduced enough to replace equivalent main-agent reading. Routine diff inspection, commit splitting, PR title/body judgment, issue close decisions, and all git or GitHub side effects stay with the main agent.
+
+Give the subagent one question, explicit input and ownership boundaries, and this compact result shape:
+
+```text
+question
+findings[]
+evidence[{path_or_url, line_or_id, reason}]
+unresolved[]
+stop_reason
+```
+
+Allow at most one retry for missing required evidence. The main agent verifies material evidence, does not repeat completed retrieval, and owns every final decision and write.

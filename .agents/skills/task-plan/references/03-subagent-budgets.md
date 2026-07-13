@@ -32,3 +32,17 @@ If no subagent is used, record the main-agent checks that covered repository rul
 - **Large / High risk:** 2 or more reviewers when UX, performance, data, rollout, or other risks need distinct ownership.
 
 Prefer cheap explorer/reviewer models when the task is structural, read-only, or review-oriented. Use stronger models only when the subtask has high ambiguity, high risk, or requires deep code reasoning.
+
+## Delegation Contract
+
+Delegate one bounded question with explicit repository scope and stop condition. Require:
+
+```text
+question
+findings[]
+evidence[{path_or_url, line_or_id, reason}]
+unresolved[]
+stop_reason
+```
+
+Allow at most one retry when required evidence is missing. The main agent verifies material evidence, avoids repeating completed exploration, and owns synthesis, approval wording, and all semantic decisions. Use a cheap model only when its compact result replaces equivalent main-agent reading.

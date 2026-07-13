@@ -1,7 +1,6 @@
 ---
 name: task-plan
 description: Investigate a repository task, model the changed behavior, apply size/risk-based subagent budgets for investigation and review, and produce an approval-ready implementation plan. Use when the user says "$task-plan" or asks to plan work before editing.
-argument-hint: "[issue-number or task description]"
 ---
 
 # Task Planning Workflow

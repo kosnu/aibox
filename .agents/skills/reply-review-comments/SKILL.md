@@ -5,20 +5,7 @@ description: Reply to recently addressed GitHub PR review comments from the curr
 
 # Reply Review Comments
 
-Use this skill when PR review comments have already been handled through code changes or explanation, and the user wants Codex to reply to those comments and resolve fully completed threads.
-
-## Success Criteria
-
-A successful run replies only to review threads whose handling is clear, uses concrete Japanese explanation, includes commit IDs only when attributable, and resolves only fully completed threads.
-
-The final report should distinguish replied threads from resolved threads and call out any skipped threads with a brief reason.
-
-## When To Use
-
-- The user asks Codex to reply to recently handled review comments.
-- Each reply needs to explain what changed or how the comment was addressed.
-- Relevant commit IDs should be included when the handling is already committed.
-- Only fully completed threads should be resolved.
+Reply in Japanese to recently handled PR review comments and resolve only fully completed threads.
 
 ## Preconditions
 
@@ -38,103 +25,9 @@ Stop before posting replies or resolving threads when:
 ## Workflow
 
 1. Resolve the target PR.
-   - Use the PR URL, `owner/repo` plus PR number, or the PR associated with the current branch.
-2. Fetch review threads.
-   - Use `gh pr view --json number,url,headRepository,headRepositoryOwner` when the PR should come from the current branch.
-   - Use `gh api graphql` directly to inspect `reviewThreads`, including `id`, `isResolved`, `isOutdated`, path and line anchors, and each comment's `databaseId`, `body`, `author`, and `replyTo`.
-   - If the first page has `hasNextPage: true`, repeat the query with the returned `endCursor` until all relevant threads are fetched.
-3. Narrow the target set to recently handled threads.
-   - Prefer unresolved, non-outdated threads.
-   - Reply only when the requested change is clearly satisfied by the current branch diff, recent commits, or implementation state.
-   - Do not treat touching the same file as sufficient proof that the requested change was handled.
-4. Draft one reply per thread.
-   - Write replies in Japanese, even when examples, sample replies, review comments, code, branch names, or commit messages are in English.
-   - Sample language is not output-language guidance. English samples may stay English; still write the actual reply in Japanese.
-   - Explain what changed or how the comment was handled in 1-3 concrete Japanese sentences.
-   - Include a commit ID only when the change is committed and the commit-to-comment mapping is clear.
-   - Do not wrap commit IDs in backticks.
-   - Put one ASCII space before and after each commit ID.
-   - Example: `Handled in commit  abc1234  and updated the validation path accordingly.`
-   - If the change is not committed, do not invent a commit ID. Explain in Japanese that the change is not committed if that matters.
-5. Post the replies.
-   - For inline review threads, use the `addPullRequestReviewThreadReply` GraphQL mutation through `gh api graphql`.
-   - Reply to the target thread ID from `reviewThreads.nodes.id`; do not post through comment-ID reply endpoints.
-   - Do not announce endpoint fallback or transport switching. The normal path is the thread-scoped GraphQL mutation.
-   - If the feedback exists only in a review summary with no replyable thread, add a top-level PR comment only when that is the right place to follow up.
-6. Resolve only fully completed threads.
-   - After replying, use the `resolveReviewThread` GraphQL mutation through `gh api graphql`.
-   - Resolve only when all of these are true:
-     - The requested issue is actually fixed on the current branch.
-     - No follow-up work or confirmation is pending.
-     - The reply is consistent with the implementation.
-     - There are no conflicting comments or unresolved concerns.
-
-## Resolve Mutation
-
-```bash
-gh api graphql \
-  -F threadId=THREAD_ID \
-  -f query='mutation($threadId: ID!) { resolveReviewThread(input: {threadId: $threadId}) { thread { isResolved } } }'
-```
-
-## Reply Mutation
-
-```bash
-gh api graphql \
-  -F threadId=THREAD_ID \
-  -F body='REPLY_BODY' \
-  -f query='mutation($threadId: ID!, $body: String!) { addPullRequestReviewThreadReply(input: {pullRequestReviewThreadId: $threadId, body: $body}) { comment { url } } }'
-```
-
-## Review Thread Query
-
-Use this query through `gh api graphql` when thread-aware data is needed:
-
-```bash
-gh api graphql \
-  -F owner=OWNER \
-  -F repo=REPO \
-  -F number=PR_NUMBER \
-  -f query='
-query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
-  repository(owner: $owner, name: $repo) {
-    pullRequest(number: $number) {
-      reviewThreads(first: 100, after: $cursor) {
-        pageInfo { hasNextPage endCursor }
-        nodes {
-          id
-          isResolved
-          isOutdated
-          path
-          line
-          startLine
-          originalLine
-          originalStartLine
-          comments(first: 100) {
-            nodes {
-              id
-              databaseId
-              body
-              createdAt
-              updatedAt
-              url
-              author { login }
-              replyTo { databaseId }
-            }
-          }
-        }
-      }
-    }
-  }
-}'
-```
-
-## Reply Quality Bar
-
-- Reply in Japanese by default. Do not switch to English because sample text, sample replies, GitHub comments, or implementation artifacts are written in English.
-- Treat English examples as structural examples only. Do not rewrite samples just to make them Japanese; produce the actual GitHub reply in Japanese.
-- Do not reply with only "fixed" or "addressed"; summarize the concrete handling in Japanese.
-- Mention file names or function names only when they help the reviewer understand the response.
-- If explanation alone addressed the comment, do not invent a code change.
-- Do not resolve partially handled threads.
-- Briefly report back to the user which threads were replied to and which threads were resolved.
+2. Read [references/github-threads.md](references/github-threads.md), then fetch all relevant review threads with their resolution and outdated state.
+3. Match unresolved, non-outdated comments to the current diff, recent commits, or implementation evidence. Touching the same file is not proof of completion.
+4. Read [references/reply-quality.md](references/reply-quality.md), then draft one concrete reply per clearly handled thread.
+5. Post replies through the thread-scoped GraphQL mutation. Use a top-level PR comment only for feedback that has no replyable thread.
+6. Resolve only threads that satisfy every completion condition in `reply-quality.md`.
+7. Report replied, resolved, and skipped threads separately with brief reasons.
