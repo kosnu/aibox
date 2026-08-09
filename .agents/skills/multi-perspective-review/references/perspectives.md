@@ -1,6 +1,6 @@
 # Review Perspectives
 
-Assign only perspectives justified by the diff.
+Assign only perspectives justified by the review target and its context.
 
 - **Senior Engineer:** maintainability, boundaries, naming, coupling, pattern drift, and error handling.
 - **Senior Architect:** responsibility split, integration boundaries, consistency, API or schema shape, and ownership.
@@ -10,4 +10,4 @@ Assign only perspectives justified by the diff.
 - **Accessibility / UX Reviewer:** keyboard, focus, semantics, states, clarity, and flow regressions.
 - **Data / Migration Reviewer:** rollback, compatibility, backfill, integrity, generated types, and deployment order.
 
-Name a domain-specific reviewer when the diff has another material risk, and define that concern in one sentence.
+Name a domain-specific reviewer when the review target has another material risk, and define that concern in one sentence.
