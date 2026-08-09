@@ -1,6 +1,6 @@
 ---
 name: multi-perspective-review
-description: Review an already implemented repository diff from budgeted expert perspectives after code changes are complete. Use when Codex needs post-implementation review before final verification, commit, PR, or handoff, especially when the user asks for senior engineer, senior architect, QA, performance, security, accessibility, migration, or multi-perspective review of a diff.
+description: Review an already implemented repository diff from budgeted expert perspectives after code changes are complete. Use only when the user explicitly invokes `$multi-perspective-review` or explicitly names the `multi-perspective-review` skill.
 ---
 
 # Multi Perspective Review
@@ -11,7 +11,7 @@ The main agent owns final judgment, integration of reviewer feedback, and the us
 
 ## Entry Gate
 
-Use this skill only when there is an implemented change to review.
+Invoke this skill only when the user explicitly invokes `$multi-perspective-review` or explicitly names the `multi-perspective-review` skill.
 
 Before assigning reviewers, the main agent must inspect:
 
