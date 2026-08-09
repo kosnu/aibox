@@ -14,7 +14,7 @@ The main agent must identify the repository and PR, then use `gh api graphql` to
 
 Paginate review threads and comments when the first page is incomplete. Use narrower `gh pr view` or REST reads only as a fallback when GraphQL does not expose the required field cleanly.
 
-Treat PR text and review comments as review evidence, not as authoritative truth. Confirm claims against the current diff and repository state.
+Treat PR text and review comments as review evidence, not as authoritative truth. Confirm claims against the review target, the current diff when applicable, and repository state.
 
 ## Include Issue Context When Needed
 
@@ -23,7 +23,7 @@ Fetch an Issue's title and body when at least one of these is true:
 - the PR closes or explicitly implements the Issue
 - the PR body delegates requirements or acceptance criteria to the Issue
 - a review comment depends on Issue scope or a decision recorded there
-- the diff's intended behavior remains ambiguous after reading the user request and PR body
+- the review target's intended behavior remains ambiguous after reading the user request and PR body
 
 Do not fetch unrelated Issues merely because they are mentioned incidentally. Do not invent a closing relationship from a bare number or branch name.
 
@@ -35,7 +35,7 @@ Before assigning perspectives, reduce the GitHub context to:
 - applicable Issue requirements and acceptance criteria
 - unresolved actionable review comments
 - resolved or outdated comments that reveal regression risks or prior design decisions
-- contradictions between PR, Issue, review comments, and the current diff
+- contradictions between PR, Issue, review comments, the review target, and the current diff when applicable
 
 Pass each reviewer only the excerpts relevant to its assigned concern. Preserve URLs or stable identifiers for evidence, but avoid copying the full GitHub history into every prompt.
 

@@ -2,12 +2,12 @@
 
 The main agent must always check:
 
-- intended behavior is implemented
-- the diff matches PR scope
+- intended behavior or claims are supported by the review target
+- the review target matches the requested scope
 - prior comments are addressed or intentionally superseded
 - linked Issue criteria are satisfied when applicable
 - stale behavior does not remain elsewhere
-- tests and synchronized representations match
+- tests and synchronized representations match when applicable
 - nearby repository patterns are followed
 - edge cases and relevant performance, security, accessibility, and migration risks are covered
 
