@@ -1,17 +1,19 @@
 ---
 name: multi-perspective-review
-description: Review a user-specified diff, GitHub Issue, design document, or other artifact using a small set of relevant expert perspectives. Use only when the user explicitly invokes `$multi-perspective-review` or explicitly names the `multi-perspective-review` skill.
+description: Review a user-specified diff, GitHub Issue, design document, or other artifact using a small set of relevant expert perspectives. Use only when the user explicitly requests a multi-perspective review, invokes `$multi-perspective-review`, names the `multi-perspective-review` skill, or names multiple specialist viewpoints. Do not use for generic requests such as "review this" or "レビューして"; use the standard review workflow instead.
 ---
 
 # Multi Perspective Review
 
 Review the user-specified target with the smallest set of expert perspectives that covers its risks. The target may be in GitHub, Git, or a local file.
 
+Do not invoke this skill for a generic review request. Require an explicit multi-perspective request or multiple named specialist viewpoints.
+
 The main agent owns final judgment, integration of reviewer feedback, and the user-facing report. Subagents provide independent review passes only when their perspective can materially reduce risk.
 
 ## Invocation Gate
 
-Invoke this skill only when the user explicitly invokes `$multi-perspective-review` or explicitly names the `multi-perspective-review` skill.
+Invoke this skill only when the user explicitly requests a multi-perspective review, invokes `$multi-perspective-review`, explicitly names the `multi-perspective-review` skill, or names multiple specialist viewpoints.
 
 Before assigning reviewers, the main agent must inspect:
 
