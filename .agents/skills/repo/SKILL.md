@@ -19,6 +19,16 @@ Infer the mode from `$ARGUMENTS` and the user's wording. If the requested mode i
 
 For `ship`, read only the reference files needed for the missing steps. Do not create duplicate issues, branches, commits, or PRs when the current repository state already satisfies a step.
 
+## Remote Handling
+
+Do not treat a missing `origin` remote as a global blocker.
+
+- Run local-capable modes such as `branch` and `commit` without a remote.
+- For GitHub reads and writes, use an explicitly supplied repository target even when no remote exists. Otherwise resolve the target from the current branch's configured remote, then `origin`, then the only configured remote.
+- Resolve a push remote only when the current operation requires a push, using the same configured-remote preference.
+- For `ship`, complete safe local steps before stopping at the first remaining remote-dependent step. Report that exact blocker and preserve the completed local work.
+- Do not add or rewrite remotes unless the user explicitly requests it.
+
 ## Command Execution
 
 Run each `git`, `gh`, and shell command as a separate command invocation.
