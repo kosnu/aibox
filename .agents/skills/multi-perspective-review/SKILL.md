@@ -9,7 +9,7 @@ Review the user-specified target with the smallest set of expert perspectives th
 
 Do not invoke this skill for a generic review request. Require an explicit multi-perspective request or multiple named specialist viewpoints.
 
-The main agent owns final judgment, integration of reviewer feedback, and the user-facing report. Subagents provide independent review passes only when their perspective can materially reduce risk.
+The main agent owns final judgment, integration of reviewer feedback, and the user-facing report. Subagents provide independent review passes only when their perspective can materially reduce risk. Reviewer subagents use the low-cost model and explicit assignment contract defined in `references/reviewer-contract.md`; do not inherit the main agent's model or rely on inherited conversation context.
 
 ## Invocation Gate
 
