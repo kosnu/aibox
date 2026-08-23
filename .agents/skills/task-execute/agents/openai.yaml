@@ -1,7 +1,0 @@
-interface:
-  display_name: "Task Execute"
-  short_description: "Implement an approved plan with synchronized behavior and budgeted review"
-  default_prompt: "Use $task-execute to implement the approved plan, keep changed behavior synchronized, review within the approved budget, verify, and stop for re-approval if scope or behavior changes."
-
-policy:
-  allow_implicit_invocation: true
