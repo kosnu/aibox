@@ -1,6 +1,6 @@
 ---
 name: reply-review-comments
-description: Reply to recently addressed GitHub PR review comments from the current branch, explain how each comment was handled, include commit IDs when relevant, and resolve only threads that are fully complete. Use when the user asks to reply to handled review comments or resolve completed review threads.
+description: Reply to addressed GitHub PR review comments or resolve completed threads when the user requests those actions.
 ---
 
 # Reply Review Comments

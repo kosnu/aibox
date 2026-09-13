@@ -1,23 +1,23 @@
 ---
 name: setup-codex-home
-description: Sync repository .codex entries and .agents skills into the user's home directories with entry-level symlinks, without directory-level symlinks, while preserving a home-local config.toml. Use when the user asks to set up, relink, or verify this repository's Codex home configuration.
+description: Set up, relink, or verify this repository's Codex home symlinks when requested, preserving the home-local config.toml.
 ---
 
 # Setup Codex Home
 
 ## Success Criteria
 
-Finish only after the repository entries are synchronized, stale managed links are removed, home config remains local, and the resulting link targets are verified.
+For setup or relinking, finish after repository entries are synchronized, stale managed links are removed, home config remains local, and link targets are verified. For verification-only requests, inspect these conditions and report discrepancies without running the setup script or changing files.
 
 ## Steps
 
 1. Confirm the repository contains the source `.codex` directory.
-2. Run `bash scripts/setup-codex.sh` from the repository root.
+2. For setup or relinking, run `bash scripts/setup-codex.sh` from the repository root.
 3. Verify `~/.codex` and `~/.agents/skills` are real directories, not directory-level symlinks.
 4. Verify `~/.codex/config.toml` exists as a regular home-local file and is not a symlink.
 5. Compare source children with their managed home entries and verify every expected symlink resolves to the repository source.
 6. Confirm no stale managed symlink remains for a source child that no longer exists.
-7. Report linked, skipped, unlinked, restored, copied, and backed-up entries from the setup output. Stop with the exact failed condition if verification does not pass.
+7. Report discrepancies for verification-only requests; after setup, summarize linked, skipped, unlinked, restored, copied, and backed-up entries from its output. Report the exact failed condition if verification does not pass.
 
 ## Behavior
 

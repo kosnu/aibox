@@ -1,6 +1,6 @@
 ---
 name: repo
-description: Unified repository workflow entrypoint for creating GitHub issues, creating branches, committing changes, creating open pull requests, and shipping work end to end. Use when the user requests repo work such as "issue作って", "ブランチを切って", "コミットして", "PRを作って", "shipして", or invokes "$repo issue|branch|commit|pr|ship".
+description: Create GitHub issues, branches, commits, or PRs when requested, including end-to-end shipping. Not for ordinary implementation or read-only review.
 ---
 
 # Repo Workflow
@@ -9,10 +9,10 @@ Use this skill as the primary repository workflow for issue creation, branch cre
 
 ## Mode Selection
 
-- `issue`: Draft and create a GitHub issue. Read `references/issue.md`.
-- `branch`: Create and switch to a branch from latest `main`. Read `references/branch.md`.
-- `commit`: Stage and commit scoped changes. Read `references/commit.md`.
-- `pr`: Push the branch and create an open pull request. Read `references/pr.md`.
+- `issue`: Draft and create a GitHub issue. Read [issue.md](references/issue.md).
+- `branch`: Create and switch to a branch from the freshest available `main`. Read [branch.md](references/branch.md).
+- `commit`: Stage and commit scoped changes. Read [commit.md](references/commit.md).
+- `pr`: Push the branch and create an open pull request. Read [pr.md](references/pr.md).
 - `ship`: Run only the needed modes in order: `issue`, `branch`, `commit`, `pr`.
 
 Infer the mode from `$ARGUMENTS` and the user's wording. If the requested mode is ambiguous, inspect the repository state first and choose the smallest safe workflow.
@@ -41,13 +41,9 @@ Run each `git`, `gh`, and shell command as a separate command invocation.
 
 ## Decision Style
 
-Prefer deciding and executing over asking.
+Complete the selected modes and verify their resulting state. Reuse current evidence and already completed steps. Do not stop at a draft or plan when execution is authorized.
 
-- Inspect local and GitHub state before requesting input.
-- Choose the smallest safe workflow that matches the user's command.
-- Do not request confirmation when the requested side effect is already clear.
-- When a side effect requires explicit approval, present the exact artifact and the exact approval phrase.
-- If required information is still missing after inspection, stop with one concrete missing input instead of asking an open-ended question.
+Ask only for information that remains necessary after inspection. Preserve mode-specific approval gates: issue creation requires approval of the exact title and body. When approval is needed, prepare the concrete artifact first; do not request the same approval twice.
 
 ## Pull Request Default
 
