@@ -8,19 +8,6 @@ Use the actual delegation tool's schema. Request no inherited conversation (`for
 
 Because reviewers receive no inherited context, make every assignment self-contained. Do not expect the reviewer to infer the target, requirements, repository state, or the meaning of a perspective from the conversation.
 
-The main agent must always check:
-
-- intended behavior or claims are supported by the review target
-- the review target matches the requested scope
-- prior comments are addressed or intentionally superseded
-- linked Issue criteria are satisfied when applicable
-- stale behavior does not remain elsewhere
-- tests and synchronized representations match when applicable
-- nearby repository patterns are followed
-- edge cases and relevant performance, security, accessibility, and migration risks are covered
-
-Prefer contradiction search. Look for evidence that old behavior or a missed representation remains.
-
 ## Reviewer Assignment
 
 Give each reviewer one concrete, falsifiable question with narrow, non-overlapping ownership. Provide relevant excerpts instead of requiring reconstruction of a long conversation or GitHub history. Use this assignment shape, omitting fields that do not apply:

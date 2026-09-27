@@ -17,9 +17,24 @@ Inspect the request or approved plan, the target, and evidence needed to check i
 
 For a PR target or a branch with a PR, read [github-context.md](references/github-context.md) for PR comments and applicable Issue requirements. A standalone artifact does not require unrelated GitHub context.
 
+## Main-Agent Checks
+
+Apply these checks in every review, whether or not subagents are used. Evaluate each against the target and its applicable context:
+
+- intended behavior or claims are supported by the review target
+- the review target matches the requested scope
+- prior comments are addressed or intentionally superseded
+- linked Issue criteria are satisfied when applicable
+- stale behavior does not remain elsewhere
+- tests and synchronized representations match when applicable
+- nearby repository patterns are followed
+- edge cases and relevant performance, security, accessibility, and migration risks are covered
+
+Prefer contradiction search. Look for evidence that old behavior or a missed representation remains.
+
 ## Review and Completion
 
 - Use [reviewer-budget.md](references/reviewer-budget.md) to classify risk and choose the smallest useful budget, and [perspectives.md](references/perspectives.md) to select relevant viewpoints.
-- Check scope, intended behavior, prior feedback, and relevant edge cases against evidence. Read [reviewer-contract.md](references/reviewer-contract.md) when delegating an independent concern.
+- Read [reviewer-contract.md](references/reviewer-contract.md) when delegating an independent concern.
 - Verify and deduplicate findings against the target. If fixes were requested, complete in-scope fixes and relevant verification; obtain approval before changes outside the authorized scope or behavior.
 - Report findings and verification gaps using [report-format.md](references/report-format.md). Completion is a supported judgment of the requested target, including a clear statement when no actionable findings remain.
