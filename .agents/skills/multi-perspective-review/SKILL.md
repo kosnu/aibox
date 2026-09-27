@@ -20,6 +20,6 @@ For a PR target or a branch with a PR, read [github-context.md](references/githu
 ## Review and Completion
 
 - Use [reviewer-budget.md](references/reviewer-budget.md) to classify risk and choose the smallest useful budget, and [perspectives.md](references/perspectives.md) to select relevant viewpoints.
-- Apply the main-agent checklist in [reviewer-contract.md](references/reviewer-contract.md). Read its assignment details when delegating independent concerns; preserve the low-cost model and self-contained context requirements.
+- Check scope, intended behavior, prior feedback, and relevant edge cases against evidence. Read [reviewer-contract.md](references/reviewer-contract.md) when delegating an independent concern.
 - Verify and deduplicate findings against the target. If fixes were requested, complete in-scope fixes and relevant verification; obtain approval before changes outside the authorized scope or behavior.
 - Report findings and verification gaps using [report-format.md](references/report-format.md). Completion is a supported judgment of the requested target, including a clear statement when no actionable findings remain.
