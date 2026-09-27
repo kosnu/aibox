@@ -2,41 +2,15 @@
 
 ## Reviewer Model
 
-Run reviewer subagents with `model: gpt-5.6-luna` and `fork_context: false`. Do not inherit the main agent's model or full conversation history.
+For a bounded review, prefer an available lower-cost model with sufficient capability; use `gpt-6-luna` when it is offered by the current tool. Honor an explicit user model choice. Do not infer availability or pricing from a model name.
 
-If `gpt-5.6-luna` is unavailable, use the lowest-cost available model that can perform the bounded review. Do not silently fall back to the main agent's model. When no explicit lower-cost model is available, keep that perspective with the main agent instead of spawning a reviewer.
+Use the actual delegation tool's schema. Request no inherited conversation (`fork_turns: "none"` for `collaboration.spawn_agent`; `fork_context: false` only for a tool that supports it). If model selection or isolated context is unsupported, keep that perspective with the main agent rather than inventing arguments or silently increasing cost.
 
 Because reviewers receive no inherited context, make every assignment self-contained. Do not expect the reviewer to infer the target, requirements, repository state, or the meaning of a perspective from the conversation.
 
-The main agent must always check:
-
-- intended behavior or claims are supported by the review target
-- the review target matches the requested scope
-- prior comments are addressed or intentionally superseded
-- linked Issue criteria are satisfied when applicable
-- stale behavior does not remain elsewhere
-- tests and synchronized representations match when applicable
-- nearby repository patterns are followed
-- edge cases and relevant performance, security, accessibility, and migration risks are covered
-
-Prefer contradiction search. Look for evidence that old behavior or a missed representation remains.
-
 ## Reviewer Assignment
 
-Give each reviewer one concrete, falsifiable review question. Include all of the following in the assignment:
-
-- exact repository and review target: absolute working directory, base/head or diff range, and owned files, URLs, or document sections
-- intended behavior and scope: relevant user request, approved plan, PR claims, Issue acceptance criteria, and unresolved comment excerpts
-- one named perspective with a target-specific checklist of failure modes to inspect
-- applicable repository rules and the exact paths to supporting tests, fixtures, schemas, configs, or docs
-- known verification results and claims that still require independent confirmation
-- evidence requirements: cite a path or URL plus line or stable identifier for every material finding
-- explicit exclusions: no edits, no unrelated dirty changes, no scope expansion, and no review concerns owned by another reviewer
-- allowed read-only inspection or commands, the required result shape, and a stop condition for missing access or ambiguous evidence
-
-Keep assignments narrow and non-overlapping. Prefer concrete checks such as "verify every renamed field is updated in schema, parser, fixture, and test" over broad prompts such as "review for quality." Provide relevant excerpts when the reviewer would otherwise have to reconstruct intent from a long conversation or GitHub history.
-
-Use this assignment shape:
+Give each reviewer one concrete, falsifiable question with narrow, non-overlapping ownership. Provide relevant excerpts instead of requiring reconstruction of a long conversation or GitHub history. Use this assignment shape, omitting fields that do not apply:
 
 ```text
 Review question: <one falsifiable question>
