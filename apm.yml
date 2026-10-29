@@ -1,0 +1,8 @@
+name: aibox
+version: 1.0.0
+description: Shared personal agent skills
+author: kosnu
+includes: auto
+dependencies:
+  apm: []
+  mcp: []

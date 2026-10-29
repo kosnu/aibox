@@ -6,8 +6,6 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_DIR="$PROJECT_ROOT/.codex"
 TARGET_DIR="$HOME/.codex"
-SKILLS_SOURCE_DIR="$PROJECT_ROOT/.agents/skills"
-SKILLS_TARGET_DIR="$HOME/.agents/skills"
 
 # ソースディレクトリがなければ終了
 if [ ! -d "$SOURCE_DIR" ]; then
@@ -129,14 +127,3 @@ find "$SOURCE_DIR" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' sr
     done
   fi
 done
-
-if [ -d "$SKILLS_SOURCE_DIR" ]; then
-  ensure_real_dir "$SKILLS_TARGET_DIR"
-  remove_stale_child_links "$SKILLS_SOURCE_DIR" "$SKILLS_TARGET_DIR"
-
-  find "$SKILLS_SOURCE_DIR" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' src_skill; do
-    skill_name="$(basename "$src_skill")"
-    target_skill="$SKILLS_TARGET_DIR/$skill_name"
-    link_entry "$src_skill" "$target_skill"
-  done
-fi

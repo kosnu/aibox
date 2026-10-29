@@ -13,7 +13,7 @@ For setup or relinking, finish after repository entries are synchronized, stale 
 
 1. Confirm the repository contains the source `.codex` directory.
 2. For setup or relinking, run `bash scripts/setup-codex.sh` from the repository root.
-3. Verify `~/.codex` and `~/.agents/skills` are real directories, not directory-level symlinks.
+3. Verify `~/.codex` is a real directory, not a directory-level symlink.
 4. Verify `~/.codex/config.toml` exists as a regular home-local file and is not a symlink.
 5. Compare source children with their managed home entries and verify every expected symlink resolves to the repository source.
 6. Confirm no stale managed symlink remains for a source child that no longer exists.
@@ -25,6 +25,6 @@ For setup or relinking, finish after repository entries are synchronized, stale 
 - Keep each managed home directory as a real directory; link its direct child entries individually, whether a child is a file or directory.
 - Keep `~/.codex` itself as a real directory; do not replace it with a single symlink.
 - Keep `~/.codex/config.toml` as a home-local config. If it is an old symlink to the repository config, remove that link and restore `~/.codex/config.toml.bak` when present.
-- Keep `~/.agents/skills` as a real directory and link each repository `.agents/skills` child individually.
+- Skills are installed separately using APM; see the repository README. Do not relink them with this setup workflow.
 - If the target already points to the correct source, skip it.
 - If a conflicting file, directory, or symlink exists, move it to `${target}.bak` before linking.

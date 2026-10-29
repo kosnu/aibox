@@ -13,18 +13,20 @@ trap 'rm -rf "$tmp_home"' EXIT
 log_first="$(mktemp "$tmp_home/setup-codex-test-1.XXXXXX.log")"
 log_second="$(mktemp "$tmp_home/setup-codex-test-2.XXXXXX.log")"
 log_third="$(mktemp "$tmp_home/setup-codex-test-3.XXXXXX.log")"
-log_fourth="$(mktemp "$tmp_home/setup-codex-test-4.XXXXXX.log")"
 
 echo "[test] 初回実行でリンクが作成されること"
 HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_first"
 
-[ -d "$tmp_home/.agents/skills" ]
-[ ! -L "$tmp_home/.agents/skills" ]
-[ -L "$tmp_home/.agents/skills/setup-codex-home" ]
+[ ! -e "$tmp_home/.agents/skills" ]
 
-echo "[test] 再実行で冪等（skip）になること"
+mkdir -p "$tmp_home/.agents/skills/repo"
+echo "installed" > "$tmp_home/.agents/skills/repo/SKILL.md"
+
+echo "[test] 再実行で冪等（skip）になり、導入済みスキルを保持すること"
 HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_second"
 grep -q "^\[skip\]" "$log_second"
+[ ! -L "$tmp_home/.agents/skills/repo" ]
+grep -q "^installed$" "$tmp_home/.agents/skills/repo/SKILL.md"
 
 echo "[test] config.toml はリンクされず既存ファイルも保持されること"
 rm -f "$tmp_home/.codex/config.toml"
@@ -54,11 +56,5 @@ ln -s "$PROJECT_ROOT/.codex/config.toml" "$tmp_home/.codex/config.toml"
 HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_third"
 [ ! -L "$tmp_home/.codex/config.toml" ]
 cmp -s "$PROJECT_ROOT/.codex/config.toml" "$tmp_home/.codex/config.toml"
-
-echo "[test] source から削除済みの子リンクが削除されること"
-ln -s "$PROJECT_ROOT/.agents/skills/removed-skill" "$tmp_home/.agents/skills/removed-skill"
-HOME="$tmp_home" bash "$SETUP_SCRIPT" >"$log_fourth"
-[ ! -e "$tmp_home/.agents/skills/removed-skill" ]
-[ ! -L "$tmp_home/.agents/skills/removed-skill" ]
 
 echo "[ok] all checks passed"
